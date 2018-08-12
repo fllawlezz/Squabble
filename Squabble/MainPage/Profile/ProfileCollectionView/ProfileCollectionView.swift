@@ -1,0 +1,121 @@
+//
+//  ProfileCollectionView.swift
+//  Squabble
+//
+//  Created by Brandon In on 7/29/18.
+//  Copyright © 2018 Rendered Co.RaftPod. All rights reserved.
+//
+
+import UIKit
+
+class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
+    
+    var profilePage: ProfilePage?;
+    
+    let reuseHeader = "regularHeader";
+    let reuseAccountOverview = "accountOverview";
+    let reuseNormalProfileCell = "profileCell";
+    let reuseLogout = "logout";
+    
+    let cellTitles = ["James Diamond", "Terms and Privacy","Notifications"];
+    let cellDescriptions = ["Change your profile info","View Terms and Privacy Policy","Notifications"];
+    
+    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout);
+        self.translatesAutoresizingMaskIntoConstraints = false;
+        self.backgroundColor = UIColor.veryLightGray;
+        self.register(AccountOverviewCell.self, forCellWithReuseIdentifier: reuseAccountOverview);
+        self.register(RegularHeaderCell.self, forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: reuseHeader);
+        self.register(NormalProfileCell.self, forCellWithReuseIdentifier: reuseNormalProfileCell);
+        self.register(LogoutCell.self, forCellWithReuseIdentifier: reuseLogout);
+        self.delegate = self;
+        self.dataSource = self;
+        
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError();
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if(indexPath.section == 0){
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseAccountOverview, for: indexPath) as! AccountOverviewCell
+            cell.setUserName(username: "Fllawlezz");
+            cell.setFollowers(followers: 20);
+            return cell;
+        }else if(indexPath.section == 1){
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseNormalProfileCell, for: indexPath) as! NormalProfileCell;
+            cell.setTitle(title: cellTitles[indexPath.item]);
+            cell.setDescription(description: cellDescriptions[indexPath.item]);
+            if(indexPath.item+1 == cellDescriptions.count){
+                cell.hideBorder();
+            }
+            return cell;
+        }else{
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseLogout, for: indexPath) as! LogoutCell
+            return cell;
+        }
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 3;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        if(section == 0){
+            return 1;
+        }else if(section == 1){
+            return 3;
+        }else{
+            return 1;
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if(indexPath.section == 0){
+            return CGSize(width: UIscreenWidth!, height: 70);
+        }else{
+            return CGSize(width: UIscreenWidth!, height: 70);
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        if(section == 0){
+            return UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0);
+        }else{
+            return UIEdgeInsets(top: 0, left: 0, bottom: 10, right: 0)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0;
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if(indexPath.section == 1){
+            if(indexPath.item == 0){
+                let personalInfoPage = PersonalInfoPage();
+                personalInfoPage.hidesBottomBarWhenPushed = true;
+                self.profilePage?.navigationController?.pushViewController(personalInfoPage, animated: true);
+            }else if(indexPath.item == 1){
+                let termsPage = TermsAndPrivacyPage();
+                termsPage.hidesBottomBarWhenPushed = true;
+                self.profilePage?.navigationController?.pushViewController(termsPage, animated: true);
+            }else if(indexPath.item == 2){
+                
+            }else if(indexPath.item == 3){
+                
+            }
+        }else if(indexPath.section == 2){
+            standard.removeObject(forKey: "login");
+            let startingPage = StartingPage();
+            let navigationController = UINavigationController(rootViewController: startingPage);
+            navigationController.navigationBar.isHidden = true;
+            self.profilePage?.present(navigationController, animated: true, completion: nil);
+        }
+    }
+}
