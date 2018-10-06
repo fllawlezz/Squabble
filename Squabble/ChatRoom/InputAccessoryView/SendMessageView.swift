@@ -8,14 +8,20 @@
 
 import UIKit
 
-class SendMessageView: UIView, UITextViewDelegate{
+protocol SendMessageViewDelegate{
+    func scrollToBottom();
+}
+
+let resignSendMessageView = "ResignSendMessageView";
+
+class SendMessageView: UIView, UITextViewDelegate, MessageTextViewDelegate{
+    
+    var sendMessageViewDelegate: SendMessageViewDelegate?;
     
     let messageField: MessageTextView = {
         let messageField = MessageTextView();
         messageField.isScrollEnabled = false;
         messageField.font = UIFont.systemFont(ofSize: 16)
-//        messageField.spellCheckingType = .no;
-//        messageField.autocorrectionType = .no;
         return messageField;
     }()
     
@@ -44,8 +50,15 @@ class SendMessageView: UIView, UITextViewDelegate{
     required init?(coder aDecoder: NSCoder) {
         fatalError();
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self);
+    }
 
-   
+    func addObservers(){
+        let name = Notification.Name(rawValue: resignSendMessageView);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.resignMesssageView), name: name, object: nil);
+    }
     override var intrinsicContentSize: CGSize{
             return .zero;
     }
@@ -66,6 +79,9 @@ class SendMessageView: UIView, UITextViewDelegate{
             messageField.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true;
             messageField.bottomAnchor.constraint(equalTo :layoutMarginsGuide.bottomAnchor, constant: -5).isActive = true;
         };
+        
+        messageField.delegate = self;
+        messageField.messageTextViewDelegate = self;
     }
     
     fileprivate func setupSendButton(){
@@ -75,6 +91,7 @@ class SendMessageView: UIView, UITextViewDelegate{
         sendButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true;
         sendButton.widthAnchor.constraint(equalToConstant: 40).isActive = true;
         sendButton.heightAnchor.constraint(equalToConstant: 40).isActive = true;
+        sendButton.addTarget(self, action: #selector(self.sendMessage), for: .touchUpInside);
 
     }
     
@@ -87,6 +104,33 @@ class SendMessageView: UIView, UITextViewDelegate{
     }
     
     func textViewDidChange(_ textView: UITextView) {
-        self.invalidateIntrinsicContentSize()
+//        self.invalidateIntrinsicContentSize()
+    }
+    
+//    func textViewSh
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        print("starting");
+//        print("hi")
+//        self.sendMessageViewDelegate?.scrollToBottom();
+    }
+//
+//    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+//        print("yes");
+//        return true;
+//    }
+}
+
+extension SendMessageView{
+    @objc func sendMessage(){
+        print(self.messageField.text!);
+    }
+    
+    func scrollDown() {
+        self.sendMessageViewDelegate?.scrollToBottom();
+    }
+    
+    @objc func resignMesssageView(){
+        self.messageField.resignFirstResponder();
     }
 }

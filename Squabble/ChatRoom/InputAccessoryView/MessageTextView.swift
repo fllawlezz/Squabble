@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol MessageTextViewDelegate{
+    func scrollDown();
+}
+
 class MessageTextView: UITextView{
+    
+    var messageTextViewDelegate: MessageTextViewDelegate?;
     
     fileprivate let placeHolderLabel: UILabel = {
         let label = UILabel();
@@ -23,6 +29,10 @@ class MessageTextView: UITextView{
         placeHolderLabel.isHidden = false;
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self);
+    }
+    
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer);
         self.translatesAutoresizingMaskIntoConstraints = false;
@@ -30,6 +40,7 @@ class MessageTextView: UITextView{
         self.scrollIndicatorInsets = UIEdgeInsets(top: 10, left: 15, bottom: 0, right: 15);
         
         NotificationCenter.default.addObserver(self, selector: #selector(handleTextChange), name: .UITextViewTextDidChange, object: nil);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.handleTextBeginEditing), name: .UITextViewTextDidBeginEditing, object: nil);
         
         setupTextView();
         
@@ -57,6 +68,11 @@ class MessageTextView: UITextView{
     
     @objc func handleTextChange(){
         self.placeHolderLabel.isHidden = !self.text.isEmpty
+//        print("changed");
+    }
+    
+    @objc func handleTextBeginEditing(){
+        self.messageTextViewDelegate?.scrollDown();
     }
     
 }

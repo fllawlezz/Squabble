@@ -8,7 +8,13 @@
 
 import UIKit
 
+protocol ChatHeadlineBottomBarDelegate{
+    func showFlagAlert();
+}
+
 class ChatHeadlineBottomBar: UIView{
+    
+    var delegate: ChatHeadlineBottomBarDelegate?;
     
     lazy var timeFromPostLabel: NormalUILabel = {
         let timeFromPostLabel = NormalUILabel(textColor: UIColor.gray, font: UIFont.systemFont(ofSize: 14), textAlign: .center);
@@ -86,10 +92,8 @@ class ChatHeadlineBottomBar: UIView{
         flagButton.widthAnchor.constraint(equalToConstant: 15).isActive = true;
         
         flagButton.imageEdgeInsets = UIEdgeInsets(top: 5, left: 15, bottom: 5, right: 15);
-//        flagButton.leftAnchor.constraint(equalTo: self.numberOfPeopleInChatView.rightAnchor).isActive = true;
-//        flagButton.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
-//        flagButton.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
-//        flagButton.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
+        flagButton.addTarget(self, action: #selector(self.handleFlagClicked), for: .touchUpInside);
+
     }
     
     fileprivate func setupBorder(){
@@ -100,4 +104,11 @@ class ChatHeadlineBottomBar: UIView{
         border.heightAnchor.constraint(equalToConstant: 0.3).isActive = true;
     }
     
+}
+
+extension ChatHeadlineBottomBar{
+    @objc func handleFlagClicked(){
+        print("clicked");
+        delegate?.showFlagAlert();
+    }
 }

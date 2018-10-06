@@ -9,8 +9,7 @@
 import UIKit
 
 class UITextViewNoResponder: UITextView{
-    
-    
+
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         

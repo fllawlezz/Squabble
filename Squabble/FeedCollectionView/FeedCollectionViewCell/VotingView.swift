@@ -8,7 +8,15 @@
 
 import UIKit
 
+protocol VotingViewDelegate{
+    func upVote();
+    func downVote();
+}
+
+
 class VotingView: UIView{
+    
+    var delegate: VotingViewDelegate?;
     
     lazy var upvoteButton: NormalUIButton = {
         let upvoteButton = NormalUIButton(backgroundColor: UIColor.white, title: "", font: UIFont.montserratRegular(fontSize: 14), fontColor: UIColor.black);
@@ -22,16 +30,20 @@ class VotingView: UIView{
         return downvoteButton;
     }();
     
-    lazy var voteCount: NormalUILabel = {
+    lazy var voteCountLabel: NormalUILabel = {
         let votecount = NormalUILabel(textColor: UIColor.black, font: UIFont.montserratRegular(fontSize: 18), textAlign: .center);
         votecount.text = "15";
         return votecount;
     }();
     
+    var voteCount: Int?;
+    
     override init(frame: CGRect) {
         super.init(frame: frame);
         self.backgroundColor = UIColor.white;
         self.translatesAutoresizingMaskIntoConstraints = false;
+        //temp;
+        voteCount = 0;
         setupVoteCount();
         setupUpvoteButton();
         setupDownvoteButton();
@@ -42,33 +54,59 @@ class VotingView: UIView{
     }
     
     fileprivate func setupVoteCount(){
-        self.addSubview(voteCount);
-        voteCount.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true;
-        voteCount.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
-        voteCount.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true;
-        voteCount.heightAnchor.constraint(equalToConstant: 25).isActive = true;
+        self.addSubview(voteCountLabel);
+        voteCountLabel.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true;
+        voteCountLabel.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
+        voteCountLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true;
+        voteCountLabel.heightAnchor.constraint(equalToConstant: 25).isActive = true;
     }
     
     fileprivate func setupUpvoteButton(){
         self.addSubview(upvoteButton);
 //        upvoteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true;
-        upvoteButton.bottomAnchor.constraint(equalTo: self.voteCount.topAnchor, constant: -10).isActive = true;
+        upvoteButton.bottomAnchor.constraint(equalTo: self.voteCountLabel.topAnchor, constant: -10).isActive = true;
         upvoteButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true;
         upvoteButton.heightAnchor.constraint(equalToConstant: 22).isActive = true;
         upvoteButton.widthAnchor.constraint(equalToConstant: 22).isActive = true;
+        
+        upvoteButton.addTarget(self, action: #selector(self.handleUpVote), for: .touchUpInside);
     }
     
     fileprivate func setupDownvoteButton(){
         self.addSubview(downvoteButton);
 //        downvoteButton.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10).isActive = true;
-        downvoteButton.topAnchor.constraint(equalTo: self.voteCount.bottomAnchor, constant: 10).isActive = true;
+        downvoteButton.topAnchor.constraint(equalTo: self.voteCountLabel.bottomAnchor, constant: 10).isActive = true;
         downvoteButton.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true;
         downvoteButton.heightAnchor.constraint(equalToConstant: 22).isActive = true;
         downvoteButton.widthAnchor.constraint(equalToConstant: 22).isActive = true;
+        
+        downvoteButton.addTarget(self, action: #selector(self.handleDownVote), for: .touchUpInside);
     }
     
     func setVoteCount(voteCount: Int){
-        self.voteCount.text = String(voteCount);
+        self.voteCountLabel.text = String(voteCount);
     }
     
+}
+
+extension VotingView{
+    @objc func handleUpVote(){
+        if(voteCount != nil){
+            voteCount! += 1;
+            self.voteCountLabel.text = "\(voteCount!)"
+            self.upvoteButton.setBackgroundImage(#imageLiteral(resourceName: "upVoteFilled"), for: .normal);
+            self.downvoteButton.setBackgroundImage(#imageLiteral(resourceName: "downvote"), for: .normal);
+        }
+        self.delegate?.upVote();
+    }
+    
+    @objc func handleDownVote(){
+        if(voteCount != nil){
+            voteCount! -= 1;
+            self.voteCountLabel.text = "\(voteCount!)"
+            self.downvoteButton.setBackgroundImage(#imageLiteral(resourceName: "downVoteFilled"), for: .normal);
+            self.upvoteButton.setBackgroundImage(#imageLiteral(resourceName: "upvote"), for: .normal);
+        }
+        self.delegate?.downVote();
+    }
 }

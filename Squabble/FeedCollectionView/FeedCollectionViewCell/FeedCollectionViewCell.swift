@@ -157,3 +157,6 @@ class FeedCollectionViewCell: UICollectionViewCell{
     }
     
 }
+
+extension FeedCollectionViewCell{
+}

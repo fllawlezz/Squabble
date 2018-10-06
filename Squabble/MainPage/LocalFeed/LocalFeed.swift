@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegate{
+class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegate, ChatPageDelegate{
     
     lazy var localFeed: FeedCollectionView = {
         let layout = UICollectionViewFlowLayout();
@@ -142,5 +142,9 @@ extension LocalFeed{
         if(globalOrLocal == 0){
             self.localFeed.reloadData();
         }
+    }
+    
+    func resetNavigationBar(){
+        self.resetNavBar();
     }
 }

@@ -10,6 +10,12 @@ import UIKit
 
 class ChatHeadlineCell: UICollectionViewCell{
     
+    var chatHeadlineBottomBarDelegate: ChatHeadlineBottomBarDelegate?{
+        didSet{
+            self.chatLineBottomBar.delegate = self.chatHeadlineBottomBarDelegate;
+        }
+    }
+    
     lazy var userNameLabel: NormalUILabel = {
         let userNameLabel = NormalUILabel(textColor: UIColor.black, font: UIFont.montserratSemiBold(fontSize: 14), textAlign: .left);
         return userNameLabel;
@@ -68,6 +74,8 @@ class ChatHeadlineCell: UICollectionViewCell{
         chatLineBottomBar.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
         chatLineBottomBar.heightAnchor.constraint(equalToConstant: 30).isActive = true;
         chatLineBottomBar.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
+        
+//        chatLineBottomBar.delegate = self.chatHeadlineBottomBarDelegate;
     }
     
 }
