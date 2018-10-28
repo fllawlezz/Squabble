@@ -35,6 +35,7 @@ class PersonalInfoCollectionView: UICollectionView, UICollectionViewDataSource, 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if(indexPath.section == 0){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: personalInfoReuse, for: indexPath) as! PersonalInfoCell;
+            cell.personalInfoCellDelegate = self.personalInfoPage;
             cell.setData(titleData: self.textFieldTitles[indexPath.item], textFieldData: textFieldData[indexPath.item]);
             if(indexPath.item+1 == self.textFieldTitles.count){
                 cell.hideBorder();

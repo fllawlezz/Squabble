@@ -9,10 +9,14 @@
 import UIKit
 
 protocol ComposeNewHeadlineDelegate {
-    func postHeadline(globalOrLocal: Int);
+//    func postHeadline(headline: String, name: String, globalOrLocal: Int, categoryName: String);
+    func postHeadline(headline: Headline);
 }
 
-class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleViewDelegate{
+let categoryPickerNotification = "categoryNotification";
+
+
+class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleViewDelegate, CategoryFieldViewDelegate{
     
     var delegate: ComposeNewHeadlineDelegate?
     
@@ -51,15 +55,41 @@ class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleV
         return localOrGlobalView;
     }()
     
+    lazy var categoryFieldView: CategoryFieldView = {
+        let categoryFieldView = CategoryFieldView();
+        return categoryFieldView;
+    }()
+    
+//    let categories = ["General","Sports","Politics","Other"];
+    var categories:[Category]?;
+    var headline: String?
+    var name: String?
+    var localOrGlobal: Int?;
+    var selectedCategory: Category?;
+    var userID: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad();
         self.view.backgroundColor = UIColor.white;
+        addObserver();
         setupTopBackground();
         setupPostButton();
         setupTitleView();
         setupNewHeadlineView();
         setupButtonViews();
         setupLocalOrGlobalView();
+        setupPickerView();
+        
+        self.selectedCategory = Category(categoryName: "General", categoryID: 0);
+    }
+    
+    deinit{
+        NotificationCenter.default.removeObserver(self);
+    }
+    
+    fileprivate func addObserver(){
+        let name = Notification.Name(rawValue: categoryPickerNotification);
+        NotificationCenter.default.addObserver(self, selector: #selector(handleScreenUp), name: name, object: nil);
     }
     
     fileprivate func setupPostButton(){
@@ -104,8 +134,6 @@ class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleV
         newHeadlineView.topAnchor.constraint(equalTo: self.titleView.bottomAnchor, constant: 10).isActive = true;
         newHeadlineView.heightAnchor.constraint(equalToConstant: 200).isActive = true;
         
-//        newHeadlineView.composeNewHeadlinePage = self;
-//        newHeadlineView.backgroundColor = UIColor.red;
     }
     
     fileprivate func setupButtonViews(){
@@ -127,6 +155,19 @@ class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleV
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.newHeadlineView.headlineTextView.resignFirstResponder();
+        self.categoryFieldView.resignTextField();
+        handleScreenDown();
+    }
+    
+    fileprivate func setupPickerView(){
+        self.view.addSubview(categoryFieldView);
+        categoryFieldView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 45).isActive = true;
+        categoryFieldView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -45).isActive = true;
+        categoryFieldView.topAnchor.constraint(equalTo: self.localorGlobalView.bottomAnchor, constant: 10).isActive = true;
+        categoryFieldView.heightAnchor.constraint(equalToConstant: 30).isActive = true;
+        
+        categoryFieldView.categories = self.categories;
+        categoryFieldView.categoryFieldDelegate = self;
     }
 }
 
@@ -134,17 +175,104 @@ extension ComposeNewHeadline{
     
     @objc func postHeadline(){
         //get info
-        
+        getAllData();
         //post to server and into the queue
+//        let url = URL(string: "http://54.202.134.243:3000/user_login")!
+//        var urlRequest = URLRequest(url: url);
+//        let httpBody = "headlineTitle=\(self.headline!)&senderName=\(self.name!)&userID=\(self.userID!)&localOrGlobal=\(self.localOrGlobal!)&categoryID=\(selectedCategory!.categoryID)&selectedCategory=\(self.selectedCategory!.categoryName!)"
+//        urlRequest.httpMethod = "POST";
+//        urlRequest.httpBody = httpBody.data(using: .utf8);
+//        let task = URLSession.shared.dataTask(with: urlRequest) { (data, res, err) in
+//            if(err != nil){
+//                //show error
+//                DispatchQueue.main.async {
+//                    self.showNetworkError();
+//                    return;
+//                }
+//
+//            }
+//
+//            if(data != nil){
+//                let response = NSString(data: data!, encoding: 8);
+//                if(response != "error"){
+//                    //add the post to the feed
+//                    let headlineID = response;
+//                    let newHeadline = Headline(headline: self.headline!, headlineID: headlineID! as String, posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0);
+////                    self.delegate!.postHeadline(headline: self.headline!, name: "Me", globalOrLocal: self.localOrGlobal!, categoryName: self.selectedCategory!.categoryName!);
+//                    self.delegate?.postHeadline(headline: newHeadline);
+//                    //dismiss
+//                    self.dismiss(animated: true, completion: nil);
+//                }else{
+//                    //show error
+//                    DispatchQueue.main.async {
+//                        self.showPostError()
+//                    }
+//                }
+//            }
+//        }
+//        task.resume();
         
-        delegate?.postHeadline(globalOrLocal: 0);
-//        self.navigationController?.popViewController(animated: true);
+        let headlineID = 0;
+        let newHeadline = Headline(headline: self.headline!, headlineID: String(headlineID), posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0, globalOrLocal: 0);
+        //                    self.delegate!.postHeadline(headline: self.headline!, name: "Me", globalOrLocal: self.localOrGlobal!, categoryName: self.selectedCategory!.categoryName!);
+        self.delegate?.postHeadline(headline: newHeadline);
         self.dismiss(animated: true, completion: nil);
+    }
+    
+    func showNetworkError(){
+        let alert = UIAlertController(title: "Oops!", message: "You can't post this for right now... its a server problem :(. Try again later...", preferredStyle: .alert);
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil));
+        self.present(alert, animated: true, completion: nil);
+    }
+    
+    func showPostError(){
+        let alert = UIAlertController(title: "Oops!", message: "Something went wrong posting this! Please try again later!", preferredStyle: .alert);
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil));
+        self.present(alert, animated: true, completion: nil);
     }
     
     func didCancel() {
         self.newHeadlineView.headlineTextView.resignFirstResponder();
         self.dismiss(animated: true, completion: nil);
+    }
+    
+    
+    @objc func handleScreenUp(){
+        if(UIscreenWidth == 320){
+            UIView.animate(withDuration: 0.3) {
+                self.view.frame.origin.y -= 150;
+            }
+        }
+    }
+    
+    @objc func handleScreenDown(){
+        if(UIscreenWidth == 320){
+            UIView.animate(withDuration: 0.3) {
+                self.view.frame.origin.y = 0;
+            }
+        }
+    }
+    
+}
+
+extension ComposeNewHeadline{
+    func setCategory(category: Category) {
+        self.selectedCategory = category;
+    }
+    
+    func getAllData(){
+        self.headline = newHeadlineView.headlineTextView.text!;
+        if(self.buttonViews.selectorSwitch.isOn){
+            self.name = "Anonymous";
+        }else{
+            self.name = standard.object(forKey: "userName") as? String;
+        }
+        
+        if(self.localorGlobalView.selectorSwitch.isOn){
+            self.localOrGlobal = 1;
+        }else{
+            self.localOrGlobal = 0;
+        }
     }
     
 }

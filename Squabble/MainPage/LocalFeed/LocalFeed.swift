@@ -18,10 +18,15 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     
     let refreshControl = UIRefreshControl();
     
+//    var headlines:[Headline]?;
+    var headlines = [Headline]();
+    
     var localFeedTitleView: UISegmentedControl?;
     var composeButton: UIButton?;
     var searchButton: UIButton?;
     var searchBar: NormalUITextField?;
+    
+    var categories = [Category]();
     
     //collectionView
     
@@ -29,9 +34,22 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
         super.viewDidLoad();
         self.view.backgroundColor = UIColor.white;
         self.view.snapshotView(afterScreenUpdates: true);
+        setupCategories();
         setupNavBar();
         setupLocalFeed();
         setupRefreshControl();
+    }
+    
+    fileprivate func setupCategories(){
+        let general = Category(categoryName: "General", categoryID: 0);
+        let sports = Category(categoryName: "Sports", categoryID: 1);
+        let politics = Category(categoryName: "Politics", categoryID: 2);
+        let other = Category(categoryName: "Other", categoryID: 3);
+        
+        categories.append(general);
+        categories.append(sports);
+        categories.append(politics);
+        categories.append(other);
     }
     
     fileprivate func setupNavBar(){
@@ -70,6 +88,8 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
         localFeed.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true;
         localFeed.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true;
         localFeed.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true;
+        
+        localFeed.headlines = self.headlines;
     }
     
     fileprivate func setupRefreshControl(){
@@ -110,7 +130,6 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-//        print("return");
         return true;
     }
     
@@ -132,15 +151,21 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     
     @objc func handleComposeHeadline(){
         let composePage = ComposeNewHeadline();
+        composePage.categories = self.categories;
+        composePage.delegate = self;
         self.present(composePage, animated: true, completion: nil);
     }
     
 }
 
 extension LocalFeed{
-    func postHeadline(globalOrLocal: Int) {
-        if(globalOrLocal == 0){
-            self.localFeed.reloadData();
+
+    func postHeadline(headline: Headline) {
+        if(headline.globalOrLocal == 0){
+            self.headlines.insert(headline, at: 0);
+            self.localFeed.headlines = self.headlines;
+            let insertIndex = IndexPath(item: 0, section: 0);
+            self.localFeed.insertItems(at: [insertIndex]);
         }
     }
     

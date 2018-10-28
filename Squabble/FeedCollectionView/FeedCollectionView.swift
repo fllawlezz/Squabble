@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Starscream
 
 class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
@@ -14,10 +15,9 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     var globalFeedPage: GlobalFeed?;
     
     var feedReuse = "feedReuse";
-    var mockupNames = ["Anonymous","Swarles Barkley","Dr.Julius Erving"];
-    var mockupHeadlines = ["Ray Charles turned republican! All liberals come and bash him now!!","Swarles Barkely gave the New York Moons a good beating today. What do you guys think about the game?","Dr.J did a windmill dunk today at the age of 72!!! Who else can dunk at that age?!?"];
-    var mockUpCategories = ["Politics","Sports","Sports"];
-    var voteMockUps = [3,20,55];
+
+    
+    var headlines:[Headline]?;
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout);
@@ -35,10 +35,11 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: feedReuse, for: indexPath) as! FeedCollectionViewCell;
-        cell.setPosterName(posterName: mockupNames[indexPath.item]);
-        cell.setheadline(headline: mockupHeadlines[indexPath.item]);
-        cell.setCategory(categoryName: mockUpCategories[indexPath.item]);
-        cell.setVotingValue(voteValue: voteMockUps[indexPath.item]);
+        let currentHeadline = headlines![indexPath.item];
+        cell.setPosterName(posterName: currentHeadline.posterName!);
+        cell.setheadline(headline: currentHeadline.headline!);
+        cell.setCategory(categoryName: currentHeadline.categoryName!);
+        cell.setVotingValue(voteValue: currentHeadline.voteCount!);
         return cell;
     }
     
@@ -47,7 +48,13 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3;
+//        if(posterNames != nil){
+//            return posterNames!.count;
+//        }
+        if(headlines != nil){
+            return headlines!.count;
+        }
+        return 0;
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -59,7 +66,8 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
         let chatPage = ChatPage(collectionViewLayout: layout);
         chatPage.hidesBottomBarWhenPushed = true;
         chatPage.title = "Category";
-//        chatPage.localFeedPage = self.localFeedPage;
+        
+        //open a socket to the server, load into the chat room
         
         localFeedPage?.resetNavBar();
         
@@ -67,4 +75,9 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
         self.globalFeedPage?.navigationController?.pushViewController(chatPage, animated: true);
     }
     
+}
+extension FeedCollectionView{
+    func handleAddedPost(headline: String, name: String, globalOrLocal: Int, categoryName: String){
+        
+    }
 }

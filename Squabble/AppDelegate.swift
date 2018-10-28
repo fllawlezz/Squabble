@@ -12,6 +12,25 @@ import CoreData
 var UIscreenWidth: CGFloat?;
 let standard = UserDefaults.standard
 
+func saveStandards(userName: String, firstName: String, lastName: String, email: String, password: String, userID: String){
+    standard.set(userName, forKey: "userName");
+    standard.set(firstName, forKey: "firstName");
+    standard.set(lastName, forKey: "lastName");
+    standard.set(email, forKey: "email");
+    standard.set(password, forKey: "password");
+    standard.set(userID, forKey: "userID");
+}
+
+func removeStandards(){
+    standard.removeObject(forKey: "userName");
+    standard.removeObject(forKey: "firstName");
+    standard.removeObject(forKey: "lastName");
+    standard.removeObject(forKey: "email");
+    standard.removeObject(forKey: "password");
+    standard.removeObject(forKey: "userID");
+    standard.removeObject(forKey: "login");
+}
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

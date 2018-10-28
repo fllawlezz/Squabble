@@ -8,13 +8,15 @@
 
 import UIKit
 
-class PersonalInfoPage: UIViewController, ChangePasswordCellDelegate{
-    
+class PersonalInfoPage: UIViewController, ChangePasswordCellDelegate, PersonalInfoCellDelegate{
+
     var personalCollectionView: PersonalInfoCollectionView = {
         let flowLayout = UICollectionViewFlowLayout();
         var personalCollectionView = PersonalInfoCollectionView(frame: .zero, collectionViewLayout: flowLayout);
         return personalCollectionView;
     }()
+    
+    var startedEditing = false;
     
     override func viewDidLoad() {
         super.viewDidLoad();
@@ -36,13 +38,11 @@ class PersonalInfoPage: UIViewController, ChangePasswordCellDelegate{
     fileprivate func setupNavBar(){
         self.navigationItem.title = "Personal Info";
         let backButton = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil);
-        
         self.navigationController?.navigationBar.topItem?.backBarButtonItem = backButton;
         
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        print("touched");
         var count = 0;
         while(count < 4){
             let indexPath = IndexPath(item: count, section: 0);
@@ -64,5 +64,23 @@ extension PersonalInfoPage{
         let changePasswordPage = ChangePasswordPage1();
         self.navigationController?.pushViewController(changePasswordPage, animated: true);
     }
+    
+    func showChangeAlert() {
+        if(startedEditing == false){
+            let alert = UIAlertController(title: "Change Info?", message: "Are you sure you want to change your info?", preferredStyle: .alert);
+            alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { (action) in
+                self.startedEditing = true;
+                self.showSaveButton();
+            }));
+            alert.addAction(UIAlertAction(title: "No", style: .default, handler: nil));
+            self.present(alert, animated: true, completion: nil);
+        }
+    }
+    
+    fileprivate func showSaveButton(){
+        let saveButton = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(self.saveInfo));
+        self.navigationItem.rightBarButtonItem = saveButton;
+    }
+    
     
 }

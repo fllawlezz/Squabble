@@ -8,10 +8,16 @@
 
 import UIKit
 
+protocol SignUpBottomViewDelegate{
+    func handleSubmit();
+}
+
 class SignUpBottomView: UIView, UITextViewDelegate{
     
     let termsLink = "https://google.com";
     let privacyLink = "https://google.com";
+    
+    var bottomViewDelegate: SignUpBottomViewDelegate?;
     
     lazy var signUpButton: NormalUIButton = {
         let signUpButton = NormalUIButton(backgroundColor: .clear, title: "Sign Up", font: .montserratSemiBold(fontSize: 18), fontColor: .white);
@@ -53,6 +59,8 @@ class SignUpBottomView: UIView, UITextViewDelegate{
         signUpButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -25).isActive = true;
         signUpButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true;
         signUpButton.heightAnchor.constraint(equalToConstant: 50).isActive = true;
+        
+        signUpButton.addTarget(self, action: #selector(self.handleSubmit), for: .touchUpInside);
     }
     
     fileprivate func setupTermsTextView(){
@@ -85,8 +93,12 @@ class SignUpBottomView: UIView, UITextViewDelegate{
 
 extension SignUpBottomView{
     
-    @objc func touchedTextView(){
-        print("touched");
+//    @objc func touchedTextView(){
+//        print("touched");
+//    }
+    
+    @objc func handleSubmit(){
+        self.bottomViewDelegate?.handleSubmit();
     }
     
 }

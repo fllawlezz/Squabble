@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8281FDB42F1BDAAF4851F4CC /* Pods_SquabbleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD0AD087C40356C63BCEAAC4 /* Pods_SquabbleTests.framework */; };
+		A6E7A039808B208E1F71D946 /* Pods_Squabble.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A21E5EED6722B513110A27CC /* Pods_Squabble.framework */; };
 		CA199787211B5FE4003C3E64 /* LocalOrGlobalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA199786211B5FE4003C3E64 /* LocalOrGlobalView.swift */; };
 		CA19978A211D18AF003C3E64 /* Chat.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA199789211D18AF003C3E64 /* Chat.swift */; };
 		CA19978D211D1A1C003C3E64 /* PersonalInfoPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA19978C211D1A1C003C3E64 /* PersonalInfoPage.swift */; };
@@ -29,6 +31,9 @@
 		CA4FABD2211183D00000BFE4 /* HeadlineTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4FABD1211183D00000BFE4 /* HeadlineTextView.swift */; };
 		CA4FABD4211187760000BFE4 /* HeadlineAnonymousView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4FABD3211187760000BFE4 /* HeadlineAnonymousView.swift */; };
 		CA4FABD7211188550000BFE4 /* AnonymousButtonsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA4FABD6211188550000BFE4 /* AnonymousButtonsView.swift */; };
+		CA6DEB962181AFF9008E571E /* CategoryFieldView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6DEB952181AFF9008E571E /* CategoryFieldView.swift */; };
+		CA6DEB992182869C008E571E /* Headline.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6DEB982182869C008E571E /* Headline.swift */; };
+		CA6DEB9B21828A03008E571E /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6DEB9A21828A03008E571E /* Category.swift */; };
 		CA72FA16210EE2150065B719 /* NormalProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA72FA15210EE2150065B719 /* NormalProfileCell.swift */; };
 		CA86093E211D3217005B9B47 /* ChangePasswordCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA86093D211D3217005B9B47 /* ChangePasswordCell.swift */; };
 		CA860941211D477E005B9B47 /* TermsAndPrivacyPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA860940211D477E005B9B47 /* TermsAndPrivacyPage.swift */; };
@@ -100,6 +105,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1604ADBEFF8037FA95ED1DA0 /* Pods-Squabble.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Squabble.release.xcconfig"; path = "Pods/Target Support Files/Pods-Squabble/Pods-Squabble.release.xcconfig"; sourceTree = "<group>"; };
+		9CF6683B230840EA861F2F2C /* Pods-Squabble.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Squabble.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Squabble/Pods-Squabble.debug.xcconfig"; sourceTree = "<group>"; };
+		A21E5EED6722B513110A27CC /* Pods_Squabble.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Squabble.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE7D2E5570198CDFA8E7CD5C /* Pods-SquabbleTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SquabbleTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SquabbleTests/Pods-SquabbleTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CA199786211B5FE4003C3E64 /* LocalOrGlobalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalOrGlobalView.swift; sourceTree = "<group>"; };
 		CA199789211D18AF003C3E64 /* Chat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chat.swift; sourceTree = "<group>"; };
 		CA19978C211D1A1C003C3E64 /* PersonalInfoPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersonalInfoPage.swift; sourceTree = "<group>"; };
@@ -122,6 +131,9 @@
 		CA4FABD1211183D00000BFE4 /* HeadlineTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineTextView.swift; sourceTree = "<group>"; };
 		CA4FABD3211187760000BFE4 /* HeadlineAnonymousView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeadlineAnonymousView.swift; sourceTree = "<group>"; };
 		CA4FABD6211188550000BFE4 /* AnonymousButtonsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnonymousButtonsView.swift; sourceTree = "<group>"; };
+		CA6DEB952181AFF9008E571E /* CategoryFieldView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryFieldView.swift; sourceTree = "<group>"; };
+		CA6DEB982182869C008E571E /* Headline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Headline.swift; sourceTree = "<group>"; };
+		CA6DEB9A21828A03008E571E /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
 		CA72FA15210EE2150065B719 /* NormalProfileCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NormalProfileCell.swift; sourceTree = "<group>"; };
 		CA86093D211D3217005B9B47 /* ChangePasswordCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordCell.swift; sourceTree = "<group>"; };
 		CA860940211D477E005B9B47 /* TermsAndPrivacyPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TermsAndPrivacyPage.swift; sourceTree = "<group>"; };
@@ -184,6 +196,8 @@
 		CAC727FD210A5070007AE977 /* FeedCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCollectionView.swift; sourceTree = "<group>"; };
 		CAC72800210A50F4007AE977 /* FeedCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCollectionViewCell.swift; sourceTree = "<group>"; };
 		CAEE807D21110BE8006E3629 /* MessageTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageTextView.swift; sourceTree = "<group>"; };
+		CD0AD087C40356C63BCEAAC4 /* Pods_SquabbleTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SquabbleTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		EED7CA4259FD7F10B2941D38 /* Pods-SquabbleTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SquabbleTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-SquabbleTests/Pods-SquabbleTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +205,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A6E7A039808B208E1F71D946 /* Pods_Squabble.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -198,12 +213,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8281FDB42F1BDAAF4851F4CC /* Pods_SquabbleTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		993936051FAE602390BA0139 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A21E5EED6722B513110A27CC /* Pods_Squabble.framework */,
+				CD0AD087C40356C63BCEAAC4 /* Pods_SquabbleTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		CA199785211B5FCF003C3E64 /* LocalOrGlobal */ = {
 			isa = PBXGroup;
 			children = (
@@ -271,6 +296,7 @@
 		CA4FABC8211160770000BFE4 /* NewPost */ = {
 			isa = PBXGroup;
 			children = (
+				CA6DEB942181AFEB008E571E /* CategoryField */,
 				CA199785211B5FCF003C3E64 /* LocalOrGlobal */,
 				CA4FABD52111883E0000BFE4 /* AnonymousView */,
 				CA4FABCE21117F7F0000BFE4 /* NewHeadline */,
@@ -304,6 +330,23 @@
 				CA4FABD6211188550000BFE4 /* AnonymousButtonsView.swift */,
 			);
 			path = AnonymousView;
+			sourceTree = "<group>";
+		};
+		CA6DEB942181AFEB008E571E /* CategoryField */ = {
+			isa = PBXGroup;
+			children = (
+				CA6DEB952181AFF9008E571E /* CategoryFieldView.swift */,
+			);
+			path = CategoryField;
+			sourceTree = "<group>";
+		};
+		CA6DEB972182868E008E571E /* DataModels */ = {
+			isa = PBXGroup;
+			children = (
+				CA6DEB982182869C008E571E /* Headline.swift */,
+				CA6DEB9A21828A03008E571E /* Category.swift */,
+			);
+			path = DataModels;
 			sourceTree = "<group>";
 		};
 		CA86093C211D31EB005B9B47 /* Cells */ = {
@@ -349,6 +392,8 @@
 				CA8AF2172109C4E000A8B897 /* Squabble */,
 				CA8AF22F2109C4E200A8B897 /* SquabbleTests */,
 				CA8AF2162109C4E000A8B897 /* Products */,
+				CD88EBA89251316E9B8DE40F /* Pods */,
+				993936051FAE602390BA0139 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -364,6 +409,7 @@
 		CA8AF2172109C4E000A8B897 /* Squabble */ = {
 			isa = PBXGroup;
 			children = (
+				CA6DEB972182868E008E571E /* DataModels */,
 				CA199788211D18A0003C3E64 /* ChatPage */,
 				CA4FABC8211160770000BFE4 /* NewPost */,
 				CAC727F9210A4671007AE977 /* NavigationController */,
@@ -614,6 +660,17 @@
 			path = InputAccessoryView;
 			sourceTree = "<group>";
 		};
+		CD88EBA89251316E9B8DE40F /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				9CF6683B230840EA861F2F2C /* Pods-Squabble.debug.xcconfig */,
+				1604ADBEFF8037FA95ED1DA0 /* Pods-Squabble.release.xcconfig */,
+				AE7D2E5570198CDFA8E7CD5C /* Pods-SquabbleTests.debug.xcconfig */,
+				EED7CA4259FD7F10B2941D38 /* Pods-SquabbleTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -621,9 +678,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA8AF2352109C4E200A8B897 /* Build configuration list for PBXNativeTarget "Squabble" */;
 			buildPhases = (
+				8C86CFDC364DAC12E56162AB /* [CP] Check Pods Manifest.lock */,
 				CA8AF2112109C4E000A8B897 /* Sources */,
 				CA8AF2122109C4E000A8B897 /* Frameworks */,
 				CA8AF2132109C4E000A8B897 /* Resources */,
+				BDB8313165E963ED567F579C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -638,6 +697,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CA8AF2382109C4E200A8B897 /* Build configuration list for PBXNativeTarget "SquabbleTests" */;
 			buildPhases = (
+				96F9417C872445CFD55E9E9B /* [CP] Check Pods Manifest.lock */,
 				CA8AF2282109C4E200A8B897 /* Sources */,
 				CA8AF2292109C4E200A8B897 /* Frameworks */,
 				CA8AF22A2109C4E200A8B897 /* Resources */,
@@ -727,6 +787,65 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8C86CFDC364DAC12E56162AB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Squabble-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		96F9417C872445CFD55E9E9B /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SquabbleTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		BDB8313165E963ED567F579C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Squabble/Pods-Squabble-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Socket.IO-Client-Swift/SocketIO.framework",
+				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SocketIO.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Squabble/Pods-Squabble-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		CA8AF2112109C4E000A8B897 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -735,6 +854,7 @@
 				CA860944211D47A4005B9B47 /* TermsCollectionView.swift in Sources */,
 				CA955728210A7C3700069A26 /* GlobalFeed.swift in Sources */,
 				CAB1AC2D210DB93C00F0A812 /* ProfilePage.swift in Sources */,
+				CA6DEB9B21828A03008E571E /* Category.swift in Sources */,
 				CA955725210A61D300069A26 /* VotingView.swift in Sources */,
 				CAEE807E21110BE8006E3629 /* MessageTextView.swift in Sources */,
 				CAB11B06211E22D700DD0442 /* ChangePasswordPage1.swift in Sources */,
@@ -743,6 +863,7 @@
 				CA2449DF211EBE4B002290AC /* SignUpView.swift in Sources */,
 				CA199787211B5FE4003C3E64 /* LocalOrGlobalView.swift in Sources */,
 				CA2449E7211F9BE7002290AC /* SignUpCollectionView.swift in Sources */,
+				CA6DEB962181AFF9008E571E /* CategoryFieldView.swift in Sources */,
 				CA199791211D1A68003C3E64 /* PersonalInfoCollectionView.swift in Sources */,
 				CA9089F0210BA6C800D2227B /* OtherMessageCell.swift in Sources */,
 				CA199794211D1B1E003C3E64 /* PersonalInfoCell.swift in Sources */,
@@ -765,6 +886,7 @@
 				CA860946211D4823005B9B47 /* TermsAndPrivacyCell.swift in Sources */,
 				CA9089EC210B8A9B00D2227B /* ChatHeadlineCell.swift in Sources */,
 				CAC727C2210A3B7C007AE977 /* CustomTabBarController.swift in Sources */,
+				CA6DEB992182869C008E571E /* Headline.swift in Sources */,
 				CA2449DB211E9319002290AC /* StartingPageTitleView.swift in Sources */,
 				CAC727CB210A43E6007AE977 /* Colors.swift in Sources */,
 				CA2449E5211ECF99002290AC /* LogoutCell.swift in Sources */,
@@ -940,6 +1062,7 @@
 		};
 		CA8AF2362109C4E200A8B897 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9CF6683B230840EA861F2F2C /* Pods-Squabble.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -959,6 +1082,7 @@
 		};
 		CA8AF2372109C4E200A8B897 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1604ADBEFF8037FA95ED1DA0 /* Pods-Squabble.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -978,6 +1102,7 @@
 		};
 		CA8AF2392109C4E200A8B897 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AE7D2E5570198CDFA8E7CD5C /* Pods-SquabbleTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -999,6 +1124,7 @@
 		};
 		CA8AF23A2109C4E200A8B897 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = EED7CA4259FD7F10B2941D38 /* Pods-SquabbleTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";

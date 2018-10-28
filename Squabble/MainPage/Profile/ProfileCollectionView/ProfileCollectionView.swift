@@ -8,9 +8,15 @@
 
 import UIKit
 
+protocol ProfileCollectionViewDelegate{
+    func handleToPeresonalInfoPage();
+    func handleToTermsAndPrivacyPage();
+    func handleLogout();
+}
+
 class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
-    var profilePage: ProfilePage?;
+    var profileCollectionViewDelegate: ProfileCollectionViewDelegate?;
     
     let reuseHeader = "regularHeader";
     let reuseAccountOverview = "accountOverview";
@@ -98,13 +104,9 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if(indexPath.section == 1){
             if(indexPath.item == 0){
-                let personalInfoPage = PersonalInfoPage();
-                personalInfoPage.hidesBottomBarWhenPushed = true;
-                self.profilePage?.navigationController?.pushViewController(personalInfoPage, animated: true);
+                self.profileCollectionViewDelegate?.handleToPeresonalInfoPage();
             }else if(indexPath.item == 1){
-                let termsPage = TermsAndPrivacyPage();
-                termsPage.hidesBottomBarWhenPushed = true;
-                self.profilePage?.navigationController?.pushViewController(termsPage, animated: true);
+                self.profileCollectionViewDelegate?.handleToTermsAndPrivacyPage()
             }else if(indexPath.item == 2){
                 
             }else if(indexPath.item == 3){
@@ -112,10 +114,7 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
             }
         }else if(indexPath.section == 2){
             standard.removeObject(forKey: "login");
-            let startingPage = StartingPage();
-            let navigationController = UINavigationController(rootViewController: startingPage);
-            navigationController.navigationBar.isHidden = true;
-            self.profilePage?.present(navigationController, animated: true, completion: nil);
+            self.profileCollectionViewDelegate?.handleLogout();
         }
     }
 }

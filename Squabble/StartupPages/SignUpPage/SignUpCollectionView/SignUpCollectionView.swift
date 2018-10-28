@@ -15,6 +15,12 @@ class SignUpCollectionView: UICollectionView, UICollectionViewDelegate, UICollec
     
     var signUpPage: SignUpPage?
     
+    var userName: String?;
+    var firstName: String?;
+    var lastName: String?;
+    var email: String?;
+    var password: String?;
+    
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout);
         self.translatesAutoresizingMaskIntoConstraints = false;
@@ -45,8 +51,10 @@ class SignUpCollectionView: UICollectionView, UICollectionViewDelegate, UICollec
         cell.delegate = self;
         if(indexPath.item == 3){
             cell.inputTextField.keyboardType = .emailAddress;
+            
         }else if(indexPath.item == 4){
             cell.inputTextField.isSecureTextEntry = true;
+            cell.inputTextField.returnKeyType = .done;
         }
         return cell;
     }
@@ -74,9 +82,35 @@ class SignUpCollectionView: UICollectionView, UICollectionViewDelegate, UICollec
 
 extension SignUpCollectionView{
     func nextTextField(cellIndex: Int) {
-        let nextCellIndex = cellIndex+1;
-        let newIndexPath = IndexPath(item: nextCellIndex, section: 0);
-        let nextCell = self.cellForItem(at: newIndexPath) as! SignUpCollectionViewCell;
-        nextCell.inputTextField.becomeFirstResponder();
+        print(cellIndex);
+        if(cellIndex < 4){
+            let nextCellIndex = cellIndex+1;
+            let newIndexPath = IndexPath(item: nextCellIndex, section: 0);
+            let nextCell = self.cellForItem(at: newIndexPath) as! SignUpCollectionViewCell;
+            nextCell.inputTextField.becomeFirstResponder();
+        }
+    }
+    
+    func getAllFieldData(){
+        var count = 0;
+        while(count < cellTitles.count){
+            let cell = self.cellForItem(at: IndexPath(item: count, section: 0)) as! SignUpCollectionViewCell;
+            switch(count){
+            case 0: self.userName = cell.inputTextField.text;break;
+            case 1: self.firstName = cell.inputTextField.text;break;
+            case 2: self.lastName = cell.inputTextField.text;break;
+            case 3: self.email = cell.inputTextField.text;break;
+            case 4: self.password = cell.inputTextField.text;break;
+            default: break;
+            }
+            
+            count += 1;
+        }
+        
+        signUpPage?.userName = self.userName;
+        signUpPage?.firstName = self.firstName;
+        signUpPage?.lastName = self.lastName;
+        signUpPage?.email = self.email;
+        signUpPage?.password = self.password;
     }
 }

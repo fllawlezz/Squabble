@@ -7,12 +7,21 @@
 //
 
 import UIKit
+import SocketIO
 
 protocol ChatPageDelegate{
     func resetNavigationBar();
 }
 
 class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, UITextViewDelegate, SendMessageViewDelegate, ChatHeadlineBottomBarDelegate{
+    
+    let manager = SocketManager(socketURL: URL(string:"http://ec2-54-202-134-243.us-west-2.compute.amazonaws.com:3000/")!, config: [.log(true),.connectParams(["token":"ABC438s"])])
+    
+    var socket: SocketIOClient!;
+    
+    var name: String?;
+    var userID: String?;
+    var chatRoomID: String?;
     
     var localFeedPage: LocalFeed?;
     var globalFeedPage: GlobalFeed?;
@@ -26,7 +35,9 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     
     override func viewDidLoad() {
         super.viewDidLoad();
-        
+
+        setupHandles();
+        setupSocket();
         localFeedPage?.handleCancel();//resets navigation bar
         self.navigationItem.title = "Category";
         let textAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white, NSAttributedStringKey.font: UIFont.montserratSemiBold(fontSize: 16)];
@@ -42,6 +53,47 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
         self.collectionView?.backgroundColor = UIColor.white;
         self.collectionView?.keyboardDismissMode = .interactive;
         
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        let userData = ["userID": self.userID!];
+        socket.emit("endSocket", with: [userData]);
+        manager.disconnect()
+//        print("disconnected");
+    }
+    
+    func setupHandles(){
+        self.name = (standard.object(forKey: "userName") as! String);
+        self.userID = (standard.object(forKey: "userID") as! String);
+        self.chatRoomID = "1";
+    }
+    
+    func setupSocket(){
+        self.socket = manager.defaultSocket;
+        self.socket.on(clientEvent: .connect) { (args, ack) in
+            let userData = ["userID":self.userID!, "chatRoomID": self.chatRoomID!];
+            self.socket.emit("userSetup", with: [userData]);
+        }
+//        self.socket.connect();
+        
+        self.socket.connect(timeoutAfter: 5) {
+            let alert = UIAlertController(title: "Oops!", message: "You could not connect to the server! Try again later!!", preferredStyle: .alert);
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                self.navigationController?.popViewController(animated: true);
+            }))
+        }
+        
+        
+        self.socket.on(clientEvent: .error) { (args, ack) in
+            let alert = UIAlertController(title: "Oops!", message: "You can't connect with our servers! Please try again later", preferredStyle: .alert);
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+                self.socket.disconnect();
+                self.manager.disconnect();
+                self.navigationController?.popViewController(animated: true);
+            }))
+            self.present(alert, animated: true, completion: nil);
+        }
+                
     }
     
     lazy var sendMessageView: SendMessageView = {
@@ -139,9 +191,13 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
 
 extension ChatPage{
     func scrollToBottom() {
-//        print("scroll")
         let indexPath = IndexPath(row: self.senders.count-1, section: 1);
         self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true);
+    }
+    
+    func sendMessage(message: String){
+        let socketData = ["message" : message, "handle" : self.name!];
+        self.socket.emit("chat", with: [socketData]);
     }
     
     func showFlagAlert(){

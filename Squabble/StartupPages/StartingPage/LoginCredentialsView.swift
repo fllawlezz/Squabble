@@ -9,18 +9,19 @@
 import UIKit
 
 protocol LoginCredentialsDelegate{
-    func handleLoginAttempt();
+    func handleLoginAttempt(email: String, password: String);
+//    func handleLoginAttemptFailed();
 }
 
 class LoginCredentialsView: UIView {
     
     var delegate: LoginCredentialsDelegate?
     
-    lazy var userNameField: NormalUITextField = {
+    lazy var emailField: NormalUITextField = {
         let userNameField = NormalUITextField();
         userNameField.translatesAutoresizingMaskIntoConstraints = false;
         userNameField.font = UIFont.systemFont(ofSize: 16);
-        userNameField.attributedPlaceholder = NSAttributedString(string: "Username", attributes:[NSAttributedStringKey.foregroundColor: UIColor.white]);
+        userNameField.attributedPlaceholder = NSAttributedString(string: "Email", attributes:[NSAttributedStringKey.foregroundColor: UIColor.white]);
         userNameField.textColor = UIColor.white;
         userNameField.backgroundColor = UIColor.lightAppBlue;
         userNameField.spellCheckingType = .no;
@@ -68,18 +69,18 @@ class LoginCredentialsView: UIView {
     }
     
     fileprivate func setupUserNameField(){
-        self.addSubview(userNameField);
-        userNameField.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 25).isActive = true;
-        userNameField.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -25).isActive = true;
-        userNameField.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
-        userNameField.heightAnchor.constraint(equalToConstant: 50).isActive = true;
+        self.addSubview(emailField);
+        emailField.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 25).isActive = true;
+        emailField.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -25).isActive = true;
+        emailField.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
+        emailField.heightAnchor.constraint(equalToConstant: 50).isActive = true;
     }
     
     fileprivate func setupPasswordField(){
         self.addSubview(passwordField);
         passwordField.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 25).isActive = true;
         passwordField.rightAnchor.constraint(equalTo: self.rightAnchor, constant:-25).isActive = true;
-        passwordField.topAnchor.constraint(equalTo: self.userNameField.bottomAnchor, constant: 20).isActive = true;
+        passwordField.topAnchor.constraint(equalTo: self.emailField.bottomAnchor, constant: 20).isActive = true;
         passwordField.heightAnchor.constraint(equalToConstant: 50).isActive = true;
     }
     
@@ -102,7 +103,7 @@ class LoginCredentialsView: UIView {
     }
     
     func resignAll(){
-        self.userNameField.resignFirstResponder();
+        self.emailField.resignFirstResponder();
         self.passwordField.resignFirstResponder();
     }
     
@@ -111,7 +112,11 @@ class LoginCredentialsView: UIView {
 extension LoginCredentialsView{
     
     @objc func handleLoginAttempt(){
-        delegate?.handleLoginAttempt();
+//        if(emailField.text!.count > 0 && passwordField.text!.count > 0){
+            delegate?.handleLoginAttempt(email: self.emailField.text!, password: passwordField.text!);
+//        }else{
+//            print("none");
+//        }
     }
     
 }

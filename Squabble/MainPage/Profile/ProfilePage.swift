@@ -8,8 +8,7 @@
 
 import UIKit
 
-class ProfilePage: UIViewController{
-    //collectionView
+class ProfilePage: UIViewController, ProfileCollectionViewDelegate{
     
     lazy var profileCollectionView: ProfileCollectionView = {
         let layout = UICollectionViewFlowLayout();
@@ -30,7 +29,38 @@ class ProfilePage: UIViewController{
         profileCollectionView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true;
         profileCollectionView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true;
         
-        profileCollectionView.profilePage = self;
+        profileCollectionView.profileCollectionViewDelegate = self;
+    }
+    
+}
+
+extension ProfilePage{
+    func handleToPeresonalInfoPage() {
+        let personalInfoPage = PersonalInfoPage();
+        personalInfoPage.hidesBottomBarWhenPushed = true;
+        self.navigationController?.pushViewController(personalInfoPage, animated: true);
+
+    }
+    
+    func handleToTermsAndPrivacyPage() {
+        let termsPage = TermsAndPrivacyPage();
+        termsPage.hidesBottomBarWhenPushed = true;
+        self.navigationController?.pushViewController(termsPage, animated: true);
+    }
+    
+    func handleLogout(){
+        let alert = UIAlertController(title: "Logout", message: "Are you sure you want to logout?", preferredStyle: .alert);
+        alert.addAction(UIAlertAction(title: "Yes", style: .destructive, handler: { (action) in
+            removeStandards();
+            let startingPage = StartingPage();
+            let navigationController = UINavigationController(rootViewController: startingPage);
+            navigationController.navigationBar.isHidden = true;
+            self.present(navigationController, animated: true, completion: nil);
+        }))
+        alert.addAction(UIAlertAction(title: "No", style: .default, handler: nil));
+        self.present(alert, animated: true, completion: nil);
+        
+
     }
     
 }

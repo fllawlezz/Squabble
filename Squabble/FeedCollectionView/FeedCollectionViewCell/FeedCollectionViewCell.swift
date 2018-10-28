@@ -62,6 +62,12 @@ class FeedCollectionViewCell: UICollectionViewCell{
         return chatRoomImage;
     }()
     
+    var posterName: String?;
+    var headline: String?;
+    var categoryName: String?;
+    var categoryID: Int?;
+    
+    
     override init(frame: CGRect) {
         super.init(frame: frame);
         self.backgroundColor = UIColor.white;

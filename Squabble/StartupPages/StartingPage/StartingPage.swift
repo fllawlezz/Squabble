@@ -85,11 +85,68 @@ extension StartingPage{
         self.navigationController?.pushViewController(signUpPage, animated: true);
     }
     
-    func handleLoginAttempt() {
-        standard.set("1", forKey: "login");
-        
-        let customTabBarController = CustomTabBarController();
-        self.present(customTabBarController, animated: true, completion: nil);
+    func handleLoginAttempt(email: String, password: String) {
+        //check if the fields are filled out
+        if(email.count > 0 && password.count > 0){
+            //check site
+            let url = URL(string: "http://54.202.134.243:3000/user_login")!;
+            var request = URLRequest(url: url);
+            let postBody = "email=\(email)&password=\(password)";
+            request.httpBody = postBody.data(using: .utf8) ;
+            request.httpMethod = "POST";
+            let task = URLSession.shared.dataTask(with: request) { (data, res, err) in
+                if(err != nil){
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Oops!", message: "Something went wrong with connecting to our servers! Try again later", preferredStyle: .alert);
+                        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil));
+                        self.present(alert, animated: true, completion: nil);
+                        return;
+                    }
+                }
+                
+                
+                
+                if(data != nil){
+                    let response = NSString(data: data!, encoding: 8);
+                    if(response == "none"){
+                        DispatchQueue.main.async {
+                            let alert = UIAlertController(title: "Oops", message: "Your email and password don't match", preferredStyle: .alert);
+                            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil));
+                            self.present(alert, animated: true, completion: nil);
+                        }
+                        
+                    }else{
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary;
+                            
+//                            print(json);
+                            
+                            DispatchQueue.main.async {
+                                //save username, first name, lastName, password, email,
+                                let userName = json["userName"] as! String;
+                                let firstname = json["firstName"] as! String;
+                                let lastName = json["lastName"] as! String;
+                                let userID = String(json["userID"] as! Int);
+                                
+                                
+                                standard.set("1", forKey: "login");
+                                saveStandards(userName: userName, firstName: firstname, lastName: lastName, email: email, password: password, userID: userID);
+                                //then go to main page
+                                let customTabBarController = CustomTabBarController();
+                                self.present(customTabBarController, animated: true, completion: nil);
+                            }
+                        }catch{
+                            print("error");
+                        }
+                    }
+                }
+            }
+            task.resume()
+        }else{
+            let alert = UIAlertController(title: "Oops", message: "Please fill out all fields!", preferredStyle: .alert);
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil));
+            self.present(alert, animated: true, completion: nil);
+        }
     }
     
 }

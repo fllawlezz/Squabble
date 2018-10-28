@@ -25,6 +25,7 @@ class SignUpCollectionViewCell: UICollectionViewCell, UITextFieldDelegate{
         inputTextField.backgroundColor = UIColor.lightAppBlue;
         inputTextField.autocorrectionType = .no;
         inputTextField.spellCheckingType = .no;
+        inputTextField.returnKeyType = .next;
         return inputTextField;
     }()
     
@@ -51,7 +52,7 @@ class SignUpCollectionViewCell: UICollectionViewCell, UITextFieldDelegate{
         self.backgroundColor = UIColor.clear;
         setupInputTextField();
         setupBorder();
-        setupImage();
+//        setupImage();
     }
     
     required init?(coder aDecoder: NSCoder) {

@@ -8,10 +8,16 @@
 
 import UIKit
 
+protocol PersonalInfoCellDelegate{
+    func showChangeAlert();
+}
+
 class PersonalInfoCell: UICollectionViewCell, UITextFieldDelegate{
     
     var titleData: String?
     var textFieldData: String?
+    
+    var personalInfoCellDelegate: PersonalInfoCellDelegate?;
     
     var titleLabel: NormalUILabel = {
         var titleLabel = NormalUILabel(textColor: UIColor.black, font: UIFont.montserratBold(fontSize: 14), textAlign: .left);
@@ -58,8 +64,6 @@ class PersonalInfoCell: UICollectionViewCell, UITextFieldDelegate{
         titleLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
         titleLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
         titleLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true;
-        
-//        titleLabel.backgroundColor = UIColor.red;
     }
     
     fileprivate func setupTextField(){
@@ -86,6 +90,10 @@ class PersonalInfoCell: UICollectionViewCell, UITextFieldDelegate{
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.textField.resignFirstResponder();
         return true;
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        personalInfoCellDelegate?.showChangeAlert();
     }
     
 }

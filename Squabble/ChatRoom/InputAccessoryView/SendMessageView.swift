@@ -10,6 +10,7 @@ import UIKit
 
 protocol SendMessageViewDelegate{
     func scrollToBottom();
+    func sendMessage(message: String);
 }
 
 let resignSendMessageView = "ResignSendMessageView";
@@ -107,23 +108,17 @@ class SendMessageView: UIView, UITextViewDelegate, MessageTextViewDelegate{
 //        self.invalidateIntrinsicContentSize()
     }
     
-//    func textViewSh
     
     func textViewDidBeginEditing(_ textView: UITextView) {
         print("starting");
-//        print("hi")
-//        self.sendMessageViewDelegate?.scrollToBottom();
     }
-//
-//    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-//        print("yes");
-//        return true;
-//    }
 }
 
 extension SendMessageView{
     @objc func sendMessage(){
-        print(self.messageField.text!);
+        if(messageField.text.count > 0){
+            self.sendMessageViewDelegate?.sendMessage(message: self.messageField.text);
+        }
     }
     
     func scrollDown() {
