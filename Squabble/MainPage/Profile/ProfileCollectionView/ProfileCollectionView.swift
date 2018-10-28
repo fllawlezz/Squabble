@@ -113,7 +113,7 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
                 
             }
         }else if(indexPath.section == 2){
-            standard.removeObject(forKey: "login");
+//            standard.removeObject(forKey: "login");
             self.profileCollectionViewDelegate?.handleLogout();
         }
     }

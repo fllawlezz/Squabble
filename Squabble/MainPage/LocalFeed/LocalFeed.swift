@@ -41,10 +41,10 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     }
     
     fileprivate func setupCategories(){
-        let general = Category(categoryName: "General", categoryID: 0);
-        let sports = Category(categoryName: "Sports", categoryID: 1);
-        let politics = Category(categoryName: "Politics", categoryID: 2);
-        let other = Category(categoryName: "Other", categoryID: 3);
+        let general = Category(categoryName: "General", categoryID: 1);
+        let sports = Category(categoryName: "Sports", categoryID: 2);
+        let politics = Category(categoryName: "Politics", categoryID: 3);
+        let other = Category(categoryName: "Other", categoryID: 4);
         
         categories.append(general);
         categories.append(sports);

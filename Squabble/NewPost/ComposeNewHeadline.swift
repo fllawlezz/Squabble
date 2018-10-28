@@ -80,7 +80,7 @@ class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleV
         setupLocalOrGlobalView();
         setupPickerView();
         
-        self.selectedCategory = Category(categoryName: "General", categoryID: 0);
+        self.selectedCategory = Category(categoryName: "General", categoryID: 1);
     }
     
     deinit{
@@ -173,50 +173,58 @@ class ComposeNewHeadline: UIViewController, UITextViewDelegate,NewHeadLineTitleV
 
 extension ComposeNewHeadline{
     
+    fileprivate func getDate()->String{
+        let time = Date();
+        let timeFormatter = DateFormatter();
+        timeFormatter.dateFormat = "MM/dd/yyy hh:mm a";
+        timeFormatter.amSymbol = "AM";
+        timeFormatter.pmSymbol = "PM";
+        let date = timeFormatter.string(from: time);
+        return date;
+    }
+    
     @objc func postHeadline(){
         //get info
         getAllData();
+        let date = getDate();
         //post to server and into the queue
-//        let url = URL(string: "http://54.202.134.243:3000/user_login")!
-//        var urlRequest = URLRequest(url: url);
-//        let httpBody = "headlineTitle=\(self.headline!)&senderName=\(self.name!)&userID=\(self.userID!)&localOrGlobal=\(self.localOrGlobal!)&categoryID=\(selectedCategory!.categoryID)&selectedCategory=\(self.selectedCategory!.categoryName!)"
-//        urlRequest.httpMethod = "POST";
-//        urlRequest.httpBody = httpBody.data(using: .utf8);
-//        let task = URLSession.shared.dataTask(with: urlRequest) { (data, res, err) in
-//            if(err != nil){
-//                //show error
-//                DispatchQueue.main.async {
-//                    self.showNetworkError();
-//                    return;
-//                }
-//
-//            }
-//
-//            if(data != nil){
-//                let response = NSString(data: data!, encoding: 8);
-//                if(response != "error"){
-//                    //add the post to the feed
-//                    let headlineID = response;
-//                    let newHeadline = Headline(headline: self.headline!, headlineID: headlineID! as String, posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0);
-////                    self.delegate!.postHeadline(headline: self.headline!, name: "Me", globalOrLocal: self.localOrGlobal!, categoryName: self.selectedCategory!.categoryName!);
-//                    self.delegate?.postHeadline(headline: newHeadline);
-//                    //dismiss
-//                    self.dismiss(animated: true, completion: nil);
-//                }else{
-//                    //show error
-//                    DispatchQueue.main.async {
-//                        self.showPostError()
-//                    }
-//                }
-//            }
-//        }
-//        task.resume();
-        
-        let headlineID = 0;
-        let newHeadline = Headline(headline: self.headline!, headlineID: String(headlineID), posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0, globalOrLocal: 0);
-        //                    self.delegate!.postHeadline(headline: self.headline!, name: "Me", globalOrLocal: self.localOrGlobal!, categoryName: self.selectedCategory!.categoryName!);
-        self.delegate?.postHeadline(headline: newHeadline);
-        self.dismiss(animated: true, completion: nil);
+        let url = URL(string: "http://54.202.134.243:3000/post_headline")!
+        var urlRequest = URLRequest(url: url);
+        let httpBody = "headline=\(self.headline!)&senderName=\(self.name!)&userID=\(self.userID!)&localOrGlobal=\(self.localOrGlobal!)&categoryID=\(selectedCategory!.categoryID)&selectedCategory=\(self.selectedCategory!.categoryName!)&time=\(date)";
+//        print(httpBody);
+        urlRequest.httpMethod = "POST";
+        urlRequest.httpBody = httpBody.data(using: .utf8);
+        let task = URLSession.shared.dataTask(with: urlRequest) { (data, res, err) in
+            if(err != nil){
+                //show error
+                DispatchQueue.main.async {
+                    self.showNetworkError();
+                    return;
+                }
+
+            }
+
+            if(data != nil){
+                let response = NSString(data: data!, encoding: 8);
+//                print(response);
+                if(response != "error"){
+                    //add the post to the feed
+                    DispatchQueue.main.async {
+                        let headlineID = response! as String
+                        let newHeadline = Headline(headline: self.headline!, headlineID: headlineID, posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0, globalOrLocal: 0);
+                        self.delegate?.postHeadline(headline: newHeadline);
+                        self.dismiss(animated: true, completion: nil);
+                    }
+                    
+                }else{
+                    //show error
+                    DispatchQueue.main.async {
+                        self.showPostError()
+                    }
+                }
+            }
+        }
+        task.resume();
     }
     
     func showNetworkError(){
@@ -273,6 +281,8 @@ extension ComposeNewHeadline{
         }else{
             self.localOrGlobal = 0;
         }
+        
+        self.userID = standard.object(forKey: "userID") as? String
     }
     
 }

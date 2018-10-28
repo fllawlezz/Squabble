@@ -15,7 +15,6 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     var globalFeedPage: GlobalFeed?;
     
     var feedReuse = "feedReuse";
-
     
     var headlines:[Headline]?;
     
@@ -48,9 +47,6 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-//        if(posterNames != nil){
-//            return posterNames!.count;
-//        }
         if(headlines != nil){
             return headlines!.count;
         }
@@ -77,7 +73,7 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     
 }
 extension FeedCollectionView{
-    func handleAddedPost(headline: String, name: String, globalOrLocal: Int, categoryName: String){
-        
-    }
+//    func handleAddedPost(headline: String, name: String, globalOrLocal: Int, categoryName: String){
+//
+//    }
 }
