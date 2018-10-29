@@ -8,6 +8,8 @@
 
 import UIKit
 
+let updateChatPopulationNotification = "updateChatPopulationNotification";
+
 class NumberOfPeopleInChatView: UIView{
     
     lazy var numberOfPeopleInChatLabel: NormalUILabel = {
@@ -28,6 +30,7 @@ class NumberOfPeopleInChatView: UIView{
         super.init(frame: frame);
         self.backgroundColor = UIColor.white;
         self.translatesAutoresizingMaskIntoConstraints = false;
+        addObservers();
         setupNumberOfPeopleInChatLabel();
 //        setupChatImage();
     }
@@ -36,11 +39,18 @@ class NumberOfPeopleInChatView: UIView{
         fatalError();
     }
     
+    deinit {
+        NotificationCenter.default.removeObserver(self);
+    }
+    
+    func addObservers(){
+        let name = Notification.Name(rawValue: updateChatPopulationNotification);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateChatPopulation(notification:)), name: name, object: nil);
+    }
+    
     fileprivate func setupNumberOfPeopleInChatLabel(){
         self.addSubview(numberOfPeopleInChatLabel);
         numberOfPeopleInChatLabel.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true;
-//        numberOfPeopleInChatLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -25).isActive = true;
-//        numberOfPeopleInChatLabel.rightAnchor.constraint(equalTo: self.centerXAnchor).isActive = true;
         numberOfPeopleInChatLabel.widthAnchor.constraint(equalToConstant: UIscreenWidth!/3).isActive = true;
         numberOfPeopleInChatLabel.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
         numberOfPeopleInChatLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
@@ -57,15 +67,20 @@ class NumberOfPeopleInChatView: UIView{
         
     }
     
-//    fileprivate func setupChatImage(){
-//        self.addSubview(chatImage);
-//        chatImage.leftAnchor.constraint(equalTo: self.numberOfPeopleInChatLabel.rightAnchor, constant: 5).isActive = true;
-////        chatImage.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true;
-////        chatImage.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
-////        chatImage.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
-//        chatImage.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true;
-//        chatImage.heightAnchor.constraint(equalToConstant: 15).isActive = true;
-//        chatImage.widthAnchor.constraint(equalToConstant: 15).isActive = true;
-//    }
+    @objc func updateChatPopulation(notification:NSNotification){
+        if let info = notification.userInfo{
+            let population = info["population"] as! Int;
+            
+            let attachedImage = NSTextAttachment();
+            attachedImage.image = #imageLiteral(resourceName: "chatRoom");
+            attachedImage.bounds = CGRect(x: 0, y: -4, width: 15, height: 15);
+            
+            let attachmentString = NSAttributedString(attachment: attachedImage);
+            let usersText = NSMutableAttributedString(string: "\(population)/100 ");
+            usersText.append(attachmentString);
+            
+            self.numberOfPeopleInChatLabel.attributedText = usersText;
+        }
+    }
     
 }

@@ -30,6 +30,8 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     let userMessageReuse = "userMessage";
     let otherMessageReuse = "otherMessage";
     
+    var thisHeadline: Headline?;
+    
     let senders = ["user","other","user","user","other","other"]
     let messages = ["Donald Trump was elected teh 47th president of the United States after Barrack Obama. Obama was the first black president and Donald Trump was the first non laweyer/general politician.","FOREVER YOUNG! I WANT TO BE FOREVER YOUNG!!! DO YOU REALLY WANT TO LIVE FOREVER!!","Dude wtf is wrong with you?","Stop trolling us","I'm a crazy bitch! I Do what i want when I feel like it!!","But ok, I will stop XD"];
     
@@ -56,33 +58,35 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        let userData = ["userID": self.userID!];
+        let userData = ["userID": self.userID!,"chatRoomID":self.chatRoomID!];
         socket.emit("endSocket", with: [userData]);
         manager.disconnect()
-//        print("disconnected");
     }
     
     func setupHandles(){
         self.name = (standard.object(forKey: "userName") as! String);
         self.userID = (standard.object(forKey: "userID") as! String);
-        self.chatRoomID = "1";
+        self.chatRoomID = self.thisHeadline?.headlineID!;
     }
     
     func setupSocket(){
         self.socket = manager.defaultSocket;
+        self.socket.on("chatRoomPopulation") { (data, ack) in
+            let chatPopulation = data[0] as! Int;
+            self.thisHeadline?.chatRoomPopulation = chatPopulation;
+            let info = ["population":chatPopulation];
+            let name = Notification.Name(rawValue: updateChatPopulationNotification);
+            NotificationCenter.default.post(name: name, object: nil, userInfo: info);
+        }
         self.socket.on(clientEvent: .connect) { (args, ack) in
             let userData = ["userID":self.userID!, "chatRoomID": self.chatRoomID!];
             self.socket.emit("userSetup", with: [userData]);
         }
-//        self.socket.connect();
         
-        self.socket.connect(timeoutAfter: 5) {
-            let alert = UIAlertController(title: "Oops!", message: "You could not connect to the server! Try again later!!", preferredStyle: .alert);
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
-                self.navigationController?.popViewController(animated: true);
-            }))
+        self.socket.on("message") { (data, acks) in
+//            let messageData = data as! NSDictionary;
+//            print(messageData["test"]);
         }
-        
         
         self.socket.on(clientEvent: .error) { (args, ack) in
             let alert = UIAlertController(title: "Oops!", message: "You can't connect with our servers! Please try again later", preferredStyle: .alert);
@@ -93,6 +97,8 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
             }))
             self.present(alert, animated: true, completion: nil);
         }
+        
+        self.socket.connect();
                 
     }
     
@@ -124,6 +130,7 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if(indexPath.section == 0){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: headlineReuse, for: indexPath) as! ChatHeadlineCell
+            cell.thisHeadline = self.thisHeadline;
             cell.chatHeadlineBottomBarDelegate = self;
             return cell;
         }else{

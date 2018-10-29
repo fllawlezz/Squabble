@@ -35,6 +35,7 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: feedReuse, for: indexPath) as! FeedCollectionViewCell;
         let currentHeadline = headlines![indexPath.item];
+        cell.setHeadline(headline: currentHeadline);
         cell.setPosterName(posterName: currentHeadline.posterName!);
         cell.setheadline(headline: currentHeadline.headline!);
         cell.setCategory(categoryName: currentHeadline.categoryName!);
@@ -54,12 +55,16 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        
+        
         return CGSize(width: self.frame.width-20, height: 130);
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let layout = UICollectionViewFlowLayout();
         let chatPage = ChatPage(collectionViewLayout: layout);
+        chatPage.thisHeadline = headlines![indexPath.row];
         chatPage.hidesBottomBarWhenPushed = true;
         chatPage.title = "Category";
         

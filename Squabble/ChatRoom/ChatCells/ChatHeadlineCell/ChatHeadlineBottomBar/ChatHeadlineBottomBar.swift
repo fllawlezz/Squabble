@@ -18,7 +18,7 @@ class ChatHeadlineBottomBar: UIView{
     
     lazy var timeFromPostLabel: NormalUILabel = {
         let timeFromPostLabel = NormalUILabel(textColor: UIColor.gray, font: UIFont.systemFont(ofSize: 14), textAlign: .center);
-        timeFromPostLabel.text = "5 hours";
+//        timeFromPostLabel.text = "5 hours";
         return timeFromPostLabel;
     }()
     

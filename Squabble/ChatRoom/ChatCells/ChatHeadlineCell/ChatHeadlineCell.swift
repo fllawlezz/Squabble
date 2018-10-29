@@ -36,6 +36,12 @@ class ChatHeadlineCell: UICollectionViewCell{
         return chatLineBottomBar;
     }()
     
+    var thisHeadline: Headline?{
+        didSet{
+            self.setupText();
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame);
         self.backgroundColor = UIColor.white;
@@ -54,7 +60,7 @@ class ChatHeadlineCell: UICollectionViewCell{
         userNameLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true;
         userNameLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -80).isActive = true;
         userNameLabel.heightAnchor.constraint(equalToConstant: 25).isActive = true;
-        userNameLabel.text = "Anonymous"
+//        userNameLabel.text = "Anonymous"
     }
     
     fileprivate func setupHeadlineTextView(){
@@ -63,8 +69,8 @@ class ChatHeadlineCell: UICollectionViewCell{
         headlineTextView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true;
         headlineTextView.topAnchor.constraint(equalTo: self.userNameLabel.bottomAnchor, constant: 10).isActive = true;
         headlineTextView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -25).isActive = true;
-        headlineTextView.text = "Swarles Barkely destroyed the New York Moons!! He's an awesome player! Like for real, he's like a tremendous basketball player!! MVP!! MVP!! MVP!"
-        print(headlineTextView.text.count);
+//        headlineTextView.text = "Swarles Barkely destroyed the New York Moons!! He's an awesome player! Like for real, he's like a tremendous basketball player!! MVP!! MVP!! MVP!"
+//        print(headlineTextView.text.count);
 //        headlineTextView.backgroundColor = UIColor.red;
     }
     
@@ -76,6 +82,13 @@ class ChatHeadlineCell: UICollectionViewCell{
         chatLineBottomBar.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
         
 //        chatLineBottomBar.delegate = self.chatHeadlineBottomBarDelegate;
+    }
+    
+    func setupText(){
+        if let headline = thisHeadline{
+            self.userNameLabel.text = headline.posterName!;
+            self.headlineTextView.text = headline.headline!;
+        }
     }
     
 }

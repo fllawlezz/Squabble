@@ -38,6 +38,7 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
         setupNavBar();
         setupLocalFeed();
         setupRefreshControl();
+//        refreshControl.beginRefreshing();
     }
     
     fileprivate func setupCategories(){
@@ -94,7 +95,9 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     
     fileprivate func setupRefreshControl(){
         self.localFeed.refreshControl = self.refreshControl;
-        
+        refreshControl.addTarget(self, action: #selector(self.refreshHeadlines), for: .valueChanged);
+        self.localFeed.refreshControl!.beginRefreshing();
+        refreshHeadlines();
     }
     
     @objc func handleSearchPressed(){
@@ -171,5 +174,96 @@ extension LocalFeed{
     
     func resetNavigationBar(){
         self.resetNavBar();
+    }
+}
+
+extension LocalFeed{
+    
+    @objc func refreshHeadlines(){
+        var userID = standard.object(forKey: "userID") as! String;
+        userID = "0";
+        let url = URL(string: "http://54.202.134.243:3000/load_headlines")!
+        var request = URLRequest(url: url);
+        let postBody = "userID=\(userID)"
+        request.httpBody = postBody.data(using: .utf8);
+        request.httpMethod = "POST";
+        let task = URLSession.shared.dataTask(with: request) { (data, response, err) in
+            if(err != nil){
+                //show error
+                DispatchQueue.main.async {
+                    self.showErrorAlert();
+                }
+            }
+            
+            if(data != nil){
+                let response = NSString(data: data!, encoding: 8);
+                if(response != "error"){
+                    do{
+                        let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary;
+                        
+                        DispatchQueue.main.async {
+                            //headlineIDs,posterIDs,posterNames,descriptions,upVotes,downVotes,chatRoomPopulations,categories
+                            let headlineIDs = json["headlineIDs"] as! NSArray;
+                            let posterIDs = json["posterIDs"] as! NSArray;
+                            let posterNames = json["posterNames"] as! NSArray;
+                            let descriptions = json["descriptions"] as! NSArray;
+                            let upVotes = json["upVotes"] as! NSArray;
+                            let downVotes = json["downVotes"] as! NSArray;
+                            let chatRoomPopulations = json["chatRoomPopulations"] as! NSArray;
+                            let categories = json["categories"] as! NSArray;
+                            let categoryIDs = json["categoryIDs"] as! NSArray;
+                            
+                            var count = 0;
+                            while(count<headlineIDs.count){
+                                
+                                let headlineID = String(headlineIDs[count] as! Int);
+                                _ = String(posterIDs[count] as! Int);
+                                let posterName = posterNames[count] as! String;
+                                let description = descriptions[count] as! String;
+                                let upVote = upVotes[count] as! Int;
+                                let downVote = downVotes[count] as! Int;
+                                let chatRoomPop = chatRoomPopulations[count] as! Int;
+                                let category = categories[count] as! String;
+                                let categoryID = categoryIDs[count] as! Int;
+                                
+                                let totalVoteCount = upVote - downVote;
+                                
+                                let newHeadline = Headline(headline: description, headlineID: headlineID, posterName: posterName, categoryName: category, categoryID: categoryID, voteCount: totalVoteCount, chatRoomPopulation: chatRoomPop, globalOrLocal: 0);
+                                
+                                self.headlines.append(newHeadline);
+                                count+=1;
+                            }
+                            
+                            DispatchQueue.main.async {
+                                
+                                self.localFeed.headlines = self.headlines;
+                                self.localFeed.reloadData();
+                                
+                                self.refreshControl.endRefreshing();
+                                
+                            }
+                            
+                            
+                
+                        }
+                    }catch{
+                        print("error");
+                    }
+                }else{
+                    //show error loading
+                }
+            }
+        }
+        task.resume();
+        
+        
+    }
+    
+    func showErrorAlert(){
+        let alert = UIAlertController(title: "Ugh-Oh!", message: "It seems there was an error connecting to our servers... try again later ", preferredStyle: .alert);
+        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
+            self.refreshControl.endRefreshing();
+        }))
+        self.present(alert, animated: true, completion: nil);
     }
 }

@@ -62,6 +62,8 @@ class FeedCollectionViewCell: UICollectionViewCell{
         return chatRoomImage;
     }()
     
+    var cellHeadline: Headline?;
+    
     var posterName: String?;
     var headline: String?;
     var categoryName: String?;
@@ -160,6 +162,10 @@ class FeedCollectionViewCell: UICollectionViewCell{
     
     func setVotingValue(voteValue: Int){
         self.votingView.setVoteCount(voteCount: voteValue);
+    }
+    
+    func setHeadline(headline: Headline){
+        self.cellHeadline = headline;
     }
     
 }
