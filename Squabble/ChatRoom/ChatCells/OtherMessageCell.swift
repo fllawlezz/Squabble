@@ -33,6 +33,7 @@ class OtherMessageCell: UICollectionViewCell{
         return messageTextView;
     }()
     
+    var bubbleViewTopAnchor: NSLayoutConstraint?;
     var bubbleViewWidthAnchor: NSLayoutConstraint?
     
     override init(frame: CGRect) {
@@ -60,9 +61,14 @@ class OtherMessageCell: UICollectionViewCell{
         self.addSubview(backgroundBubbleView);
         backgroundBubbleView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 5).isActive = true;
         backgroundBubbleView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
-        backgroundBubbleView.topAnchor.constraint(equalTo: self.senderNameLabel.bottomAnchor, constant: 5).isActive = true;
-        bubbleViewWidthAnchor = backgroundBubbleView.widthAnchor.constraint(equalToConstant: 200);
+        bubbleViewWidthAnchor = backgroundBubbleView.widthAnchor.constraint(equalToConstant: 225);
         bubbleViewWidthAnchor?.isActive = true;
+        
+        if(self.senderNameLabel.isHidden){
+            backgroundBubbleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true;
+        }else{
+            backgroundBubbleView.topAnchor.constraint(equalTo: self.senderNameLabel.bottomAnchor, constant: 5).isActive = true;
+        }
     }
     
     fileprivate func setupMessageTextView(){
@@ -77,4 +83,7 @@ class OtherMessageCell: UICollectionViewCell{
         self.messageTextView.text = message;
     }
     
+    func setSenderName(name: String){
+        senderNameLabel.text = name;
+    }
 }

@@ -55,7 +55,7 @@ class UserMessageCell: UICollectionViewCell{
         backgroundBubbleView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5).isActive = true;
         backgroundBubbleView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true;
         backgroundBubbleView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5).isActive = true;
-        bubbleWidthAnchor = backgroundBubbleView.widthAnchor.constraint(equalToConstant: 200);
+        bubbleWidthAnchor = backgroundBubbleView.widthAnchor.constraint(equalToConstant: 225);
         bubbleWidthAnchor?.isActive = true;
     }
     

@@ -23,11 +23,13 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
     let reuseNormalProfileCell = "profileCell";
     let reuseLogout = "logout";
     
-    let cellTitles = ["James Diamond", "Terms and Privacy","Notifications"];
+    var cellTitles = [String]();
     let cellDescriptions = ["Change your profile info","View Terms and Privacy Policy","Notifications"];
+    var userName: String?;
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout);
+        getData();
         self.translatesAutoresizingMaskIntoConstraints = false;
         self.backgroundColor = UIColor.veryLightGray;
         self.register(AccountOverviewCell.self, forCellWithReuseIdentifier: reuseAccountOverview);
@@ -43,10 +45,20 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
         fatalError();
     }
     
+    fileprivate func getData(){
+        self.userName = (standard.object(forKey: "userName") as! String);
+        let firstName = standard.object(forKey: "firstName") as! String;
+        let lastName = standard.object(forKey: "lastName") as! String;
+        let fullName = "\(firstName) \(lastName)"
+        cellTitles.append(fullName);
+        cellTitles.append("Terms and privacy");
+        cellTitles.append("Notifications");
+    }
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if(indexPath.section == 0){
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseAccountOverview, for: indexPath) as! AccountOverviewCell
-            cell.setUserName(username: "Fllawlezz");
+            cell.setUserName(username: self.userName!);
             cell.setFollowers(followers: 20);
             return cell;
         }else if(indexPath.section == 1){
@@ -113,7 +125,6 @@ class ProfileCollectionView: UICollectionView, UICollectionViewDelegate, UIColle
                 
             }
         }else if(indexPath.section == 2){
-//            standard.removeObject(forKey: "login");
             self.profileCollectionViewDelegate?.handleLogout();
         }
     }

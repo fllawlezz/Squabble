@@ -16,10 +16,12 @@ class PersonalInfoCollectionView: UICollectionView, UICollectionViewDataSource, 
     let passwordReuse = "password";
     
     let textFieldTitles = ["UserName","FirstName","LastName","Email"];
-    let textFieldData = ["Fllawlezz","Brandon","In","fllawlezz@gmail.com"];
+//    let textFieldData = ["Fllawlezz","Brandon","In","fllawlezz@gmail.com"];
+    var textFieldData = [String]();
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout);
+        getTextFieldData();
         self.backgroundColor = UIColor.clear;
         self.translatesAutoresizingMaskIntoConstraints = false;
         self.delegate = self;
@@ -30,6 +32,17 @@ class PersonalInfoCollectionView: UICollectionView, UICollectionViewDataSource, 
     
     required init?(coder aDecoder: NSCoder) {
         fatalError();
+    }
+    
+    fileprivate func getTextFieldData(){
+        let userName = standard.object(forKey: "userName") as! String;
+        let firstName = standard.object(forKey: "firstName") as! String;
+        let lastName = standard.object(forKey: "lastName") as! String;
+        let email = standard.object(forKey: "email") as! String;
+        textFieldData.append(userName);
+        textFieldData.append(firstName);
+        textFieldData.append(lastName);
+        textFieldData.append(email);
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

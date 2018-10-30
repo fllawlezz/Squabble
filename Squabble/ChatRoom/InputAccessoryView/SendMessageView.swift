@@ -118,6 +118,7 @@ extension SendMessageView{
     @objc func sendMessage(){
         if(messageField.text.count > 0){
             self.sendMessageViewDelegate?.sendMessage(message: self.messageField.text);
+            self.messageField.text = "";
         }
     }
     

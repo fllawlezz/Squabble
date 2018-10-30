@@ -32,12 +32,11 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     
     var thisHeadline: Headline?;
     
-    let senders = ["user","other","user","user","other","other"]
-    let messages = ["Donald Trump was elected teh 47th president of the United States after Barrack Obama. Obama was the first black president and Donald Trump was the first non laweyer/general politician.","FOREVER YOUNG! I WANT TO BE FOREVER YOUNG!!! DO YOU REALLY WANT TO LIVE FOREVER!!","Dude wtf is wrong with you?","Stop trolling us","I'm a crazy bitch! I Do what i want when I feel like it!!","But ok, I will stop XD"];
+    var messages = [Message]();
     
     override func viewDidLoad() {
         super.viewDidLoad();
-
+        
         setupHandles();
         setupSocket();
         localFeedPage?.handleCancel();//resets navigation bar
@@ -55,6 +54,8 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
         self.collectionView?.backgroundColor = UIColor.white;
         self.collectionView?.keyboardDismissMode = .interactive;
         
+        //load messages
+        self.loadMessages();
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -66,7 +67,9 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     func setupHandles(){
         self.name = (standard.object(forKey: "userName") as! String);
         self.userID = (standard.object(forKey: "userID") as! String);
-        self.chatRoomID = self.thisHeadline?.headlineID!;
+        self.chatRoomID = "\(self.thisHeadline!.chatRoomID!)";
+        
+//        print("userID:\(self.userID!)")
     }
     
     func setupSocket(){
@@ -83,9 +86,21 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
             self.socket.emit("userSetup", with: [userData]);
         }
         
-        self.socket.on("message") { (data, acks) in
-//            let messageData = data as! NSDictionary;
-//            print(messageData["test"]);
+        self.socket.on("messageRecieved") { (data, acks) in
+            let senderData = data[0] as! NSDictionary;
+            let senderID = senderData["userID"] as! String;
+            let senderName = senderData["senderName"] as! String;
+            let message = senderData["message"] as! String;
+            let chatRoomID = senderData["chatRoomID"] as! String;
+            
+            let recievedMessage = Message(senderID: senderID, senderName: senderName, message: message);
+            recievedMessage.chatRoomID = chatRoomID;
+            self.messages.append(recievedMessage);
+            
+            let insertIndex = IndexPath(item: self.messages.count-1, section: 1);
+            self.collectionView?.insertItems(at: [insertIndex]);
+            
+            self.scrollToBottom();
         }
         
         self.socket.on(clientEvent: .error) { (args, ack) in
@@ -134,15 +149,26 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
             cell.chatHeadlineBottomBarDelegate = self;
             return cell;
         }else{
-            if(senders[indexPath.item] == "user"){
+            let currentMessage = messages[indexPath.item];
+            
+            if(currentMessage.senderID! == self.userID!){
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: userMessageReuse, for: indexPath) as! UserMessageCell
-                cell.setUserMessageText(message: messages[indexPath.item]);
-                cell.bubbleWidthAnchor?.constant = self.estimateFrameForText(message: messages[indexPath.item]).width+20;
+                cell.setUserMessageText(message: currentMessage.message!);
+                cell.bubbleWidthAnchor?.constant = self.estimateFrameForText(message: currentMessage.message!).width+20;
                 return cell;
             }else{
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: otherMessageReuse, for: indexPath) as! OtherMessageCell
-                cell.bubbleViewWidthAnchor?.constant = self.estimateFrameForText(message: messages[indexPath.item]).width+20;
-                cell.setMessage(message: messages[indexPath.item]);
+//                cell.backgroundColor = UIColor.red;
+//                cell.senderNameLabel.backgroundColor = UIColor.blue;
+                cell.senderNameLabel.isHidden = false;
+//                if(messages.count > 1 && indexPath.item > 0){
+//                    if(currentMessage.senderID! == messages[indexPath.item-1].senderID!){
+//                        cell.senderNameLabel.isHidden = true;
+//                    }
+//                }
+                cell.bubbleViewWidthAnchor?.constant = self.estimateFrameForText(message: currentMessage.message!).width+20;
+                cell.setMessage(message: currentMessage.message!);
+                cell.setSenderName(name: currentMessage.senderName!);
                 return cell;
             }
         }
@@ -156,7 +182,8 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
         if(section == 0){
             return 1;
         }else{
-            return senders.count;
+            return messages.count;
+            
         }
     }
     
@@ -164,12 +191,33 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
         if(indexPath.section == 0){
             return CGSize(width: self.view.frame.width, height: 150);
         }else{
-            if(senders[indexPath.item] == "user"){
-                let frame = estimateFrameForText(message: messages[indexPath.item]);
-                return CGSize(width: self.view.frame.width, height: frame.height+30);
+            let currentMessage = messages[indexPath.item];
+            if(currentMessage.senderID! == self.userID!){
+//                let frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50);
+//                let dummyCell = UserMessageCell(frame: frame);
+//                dummyCell.messageTextView.text = currentMessage.message!;
+//                dummyCell.layoutIfNeeded();
+//
+//                let targetSize = CGSize(width: self.view.frame.width, height: 1000);
+//                let estimatedSize = dummyCell.systemLayoutSizeFitting(targetSize);
+                
+                let frame1 = estimateFrameForText(message: currentMessage.message!);
+//                return CGSize(width: self.view.frame.width, height: estimatedSize.height+20);
+                return CGSize(width: self.view.frame.width, height: frame1.height+25);
             }else{
-                let frame = estimateFrameForText(message: messages[indexPath.item]);
-                return CGSize(width: self.view.frame.width, height: frame.height+30+30);
+                
+                let frame = estimateFrameForText(message: currentMessage.message!);
+//                if(messages.count > 2 && indexPath.item > 0){
+//                    let previousMessage = messages[indexPath.item - 1];
+//                    if(currentMessage.senderID! == previousMessage.senderID!){
+//                        return CGSize(width: self.view.frame.width, height: frame.height+30);
+//                    }
+//                }
+                
+                return CGSize(width: self.view.frame.width, height: frame.height+25+30);
+                
+//                let frame = estimateFrameForText(message: currentMessage.message!);
+//                return CGSize(width: self.view.frame.width, height: frame.height+30+25);
             }
         }
     }
@@ -177,7 +225,7 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
     private func estimateFrameForText(message: String)->CGRect{
         let approximateWidthOfChatCell = 200;
         let size = CGSize(width: approximateWidthOfChatCell, height: 1000);
-        let attributes = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 14)];
+        let attributes = [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 15)];
         let estimatedFrame = NSString(string: message).boundingRect(with: size, options: .usesLineFragmentOrigin, attributes: attributes, context: nil);
         return estimatedFrame;
     }
@@ -198,13 +246,27 @@ class ChatPage: UICollectionViewController, UICollectionViewDelegateFlowLayout, 
 
 extension ChatPage{
     func scrollToBottom() {
-        let indexPath = IndexPath(row: self.senders.count-1, section: 1);
-        self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true);
+        if(messages.count>3){
+            let indexPath = IndexPath(row: self.messages.count-1, section: 1);
+            self.collectionView?.scrollToItem(at: indexPath, at: UICollectionViewScrollPosition.bottom, animated: true);
+        }
     }
     
     func sendMessage(message: String){
-        let socketData = ["message" : message, "handle" : self.name!];
-        self.socket.emit("chat", with: [socketData]);
+        //senderID, senderName, message, chatRoomID, anonymous
+        if(message.count > 0){
+            let socketData = ["userID":self.userID!, "senderName":self.name!,"message":message,"chatRoomID":self.chatRoomID!];
+//            print(socketData);
+            self.socket.emit("sendMessage", with: [socketData]);
+            
+            let message = Message(senderID: self.userID!, senderName: self.name!, message: message);
+            self.messages.append(message);
+            
+            let insertIndexPath = IndexPath(item: self.messages.count-1, section: 1);
+            self.collectionView?.insertItems(at: [insertIndexPath]);
+            
+            self.scrollToBottom();
+        }
     }
     
     func showFlagAlert(){
@@ -214,5 +276,66 @@ extension ChatPage{
         }))
         alert.addAction(UIAlertAction(title: "No", style: .default, handler: nil));
         self.present(alert, animated: true, completion: nil);
+    }
+    
+    func showErrorAlert(){
+        let alert = UIAlertController(title: "Ugh-Oh", message: "There was a problem connecting to our servers... sorry for the inconvenience. Try again later!", preferredStyle: .alert);
+        alert.addAction(UIAlertAction(title: "Ok", style: .destructive, handler: { (action) in
+            self.manager.disconnect();
+            self.navigationController?.popViewController(animated: true);
+        }))
+        self.present(alert, animated: true, completion: nil);
+    }
+}
+
+
+extension ChatPage{
+    func loadMessages(){
+        let url = URL(string: "http://54.202.134.243:3000/load_messages")!;
+        var request = URLRequest(url: url);
+        let body = "chatRoomID=\(self.thisHeadline!.chatRoomID!)";
+        print(body);
+        request.httpBody = body.data(using: .utf8);
+        request.httpMethod = "POST";
+        let task = URLSession.shared.dataTask(with: request) { (data, response, err) in
+            if(err != nil){
+                //show error
+                DispatchQueue.main.async {
+                    self.showErrorAlert();
+                    return;
+                }
+            }
+            
+            if(data != nil){
+                do{
+                    let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary;
+                    
+                    DispatchQueue.main.async {
+                        //messageId, SenderID, senderName, chatRoomID, anonymous, message
+                        let messageIDs = json["messageIDs"] as! NSArray;
+                        let senderIDs = json["senderIDs"] as! NSArray;
+                        let senderNames = json["senderNames"] as! NSArray;
+//                        let anonymousArray = json["anonymousArray"] as! NSArray;
+                        let messages = json["messages"] as! NSArray;
+//                        print("\(messageIDs.count) message count");
+                        var count = 0;
+                        while(count<messageIDs.count){
+                            let senderID = String(senderIDs[count] as! Int);
+                            let senderName = senderNames[count] as! String;
+                            let message = messages[count] as! String;
+                            let newMessage = Message(senderID: senderID, senderName: senderName, message: message);
+                            self.messages.append(newMessage);
+                            count+=1;
+                        }
+                        
+                        self.collectionView?.reloadData();
+                        
+                    }
+                }catch{
+                    print("error");
+                }
+            }
+        }
+        task.resume()
     }
 }

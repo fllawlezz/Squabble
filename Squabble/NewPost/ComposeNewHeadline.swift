@@ -210,13 +210,25 @@ extension ComposeNewHeadline{
                     let response = NSString(data: data!, encoding: 8);
     //                print(response);
                     if(response != "error"){
-                        //add the post to the feed
-                        DispatchQueue.main.async {
-                            let headlineID = response! as String
-                            let newHeadline = Headline(headline: self.headline!, headlineID: headlineID, posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0, globalOrLocal: 0);
-                            self.delegate?.postHeadline(headline: newHeadline);
-                            self.dismiss(animated: true, completion: nil);
+                        
+                        do{
+                            let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary;
+                            
+                            let headlineID = json["headlineID"] as! Int;
+                            let chatRoomID = json["chatRoomID"] as! Int;
+                            
+                            DispatchQueue.main.async {
+                                let newHeadline = Headline(headline: self.headline!, headlineID: String(headlineID), chatRoomID: chatRoomID,posterName: "Me", categoryName: self.selectedCategory!.categoryName!, categoryID: self.selectedCategory!.categoryID, voteCount: 0, chatRoomPopulation: 0, globalOrLocal: 0);
+                                self.delegate?.postHeadline(headline: newHeadline);
+                                self.dismiss(animated: true, completion: nil);
+                            }
+                            
+                        }catch{
+                            print("error");
                         }
+                        
+                        //add the post to the feed
+                        
                         
                     }else{
                         //show error

@@ -7,12 +7,17 @@
 //
 
 import UIKit
-import Starscream
+
+protocol FeedCollectionViewDelegate{
+    func toChatPage(chatPage: ChatPage);
+}
 
 class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout{
     
     var localFeedPage: LocalFeed?;
     var globalFeedPage: GlobalFeed?;
+    
+    var feedCollectionViewDelegate: FeedCollectionViewDelegate?;
     
     var feedReuse = "feedReuse";
     
@@ -40,6 +45,7 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
         cell.setheadline(headline: currentHeadline.headline!);
         cell.setCategory(categoryName: currentHeadline.categoryName!);
         cell.setVotingValue(voteValue: currentHeadline.voteCount!);
+        cell.setChatPopulation(population: currentHeadline.chatRoomPopulation!);
         return cell;
     }
     
@@ -56,8 +62,6 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
-        
-        
         return CGSize(width: self.frame.width-20, height: 130);
     }
     
@@ -69,7 +73,7 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
         chatPage.title = "Category";
         
         //open a socket to the server, load into the chat room
-        
+        self.feedCollectionViewDelegate?.toChatPage(chatPage: chatPage);
         localFeedPage?.resetNavBar();
         
         self.localFeedPage?.navigationController?.pushViewController(chatPage, animated: true);
@@ -78,7 +82,4 @@ class FeedCollectionView: UICollectionView, UICollectionViewDelegate, UICollecti
     
 }
 extension FeedCollectionView{
-//    func handleAddedPost(headline: String, name: String, globalOrLocal: Int, categoryName: String){
-//
-//    }
 }

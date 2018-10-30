@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegate, ChatPageDelegate{
     
@@ -18,7 +19,6 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     
     let refreshControl = UIRefreshControl();
     
-//    var headlines:[Headline]?;
     var headlines = [Headline]();
     
     var localFeedTitleView: UISegmentedControl?;
@@ -32,16 +32,26 @@ class LocalFeed: UIViewController, UITextFieldDelegate,ComposeNewHeadlineDelegat
     
     override func viewDidLoad() {
         super.viewDidLoad();
+        addObservers();
         self.view.backgroundColor = UIColor.white;
         self.view.snapshotView(afterScreenUpdates: true);
         setupCategories();
         setupNavBar();
         setupLocalFeed();
         setupRefreshControl();
-//        refreshControl.beginRefreshing();
+    }
+    
+    deinit{
+        NotificationCenter.default.removeObserver(self);
+    }
+    
+    fileprivate func addObservers(){
+        let name = Notification.Name(rawValue: voteSendErrorNotification);
+        NotificationCenter.default.addObserver(self, selector: #selector(self.showErrorAlert), name: name, object: nil);
     }
     
     fileprivate func setupCategories(){
+        
         let general = Category(categoryName: "General", categoryID: 1);
         let sports = Category(categoryName: "Sports", categoryID: 2);
         let politics = Category(categoryName: "Politics", categoryID: 3);
@@ -169,6 +179,10 @@ extension LocalFeed{
             self.localFeed.headlines = self.headlines;
             let insertIndex = IndexPath(item: 0, section: 0);
             self.localFeed.insertItems(at: [insertIndex]);
+            
+            let name = Notification.Name(rawValue: reloadMyHeadlinesNotification);
+            let info = ["headline":headline];
+            NotificationCenter.default.post(name: name, object: nil, userInfo: info);
         }
     }
     
@@ -180,8 +194,11 @@ extension LocalFeed{
 extension LocalFeed{
     
     @objc func refreshHeadlines(){
-        var userID = standard.object(forKey: "userID") as! String;
-        userID = "0";
+        if(self.headlines.count > 0){
+            self.headlines.removeAll();
+        }
+        let userID = standard.object(forKey: "userID") as! String;
+//        userID = "0";
         let url = URL(string: "http://54.202.134.243:3000/load_headlines")!
         var request = URLRequest(url: url);
         let postBody = "userID=\(userID)"
@@ -201,6 +218,8 @@ extension LocalFeed{
                     do{
                         let json = try JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary;
                         
+                        print(json);
+                        
                         DispatchQueue.main.async {
                             //headlineIDs,posterIDs,posterNames,descriptions,upVotes,downVotes,chatRoomPopulations,categories
                             let headlineIDs = json["headlineIDs"] as! NSArray;
@@ -212,6 +231,7 @@ extension LocalFeed{
                             let chatRoomPopulations = json["chatRoomPopulations"] as! NSArray;
                             let categories = json["categories"] as! NSArray;
                             let categoryIDs = json["categoryIDs"] as! NSArray;
+                            let chatRoomIDs = json["chatRoomIDs"] as! NSArray;
                             
                             var count = 0;
                             while(count<headlineIDs.count){
@@ -225,10 +245,11 @@ extension LocalFeed{
                                 let chatRoomPop = chatRoomPopulations[count] as! Int;
                                 let category = categories[count] as! String;
                                 let categoryID = categoryIDs[count] as! Int;
+                                let chatRoomID = chatRoomIDs[count] as! Int;
                                 
                                 let totalVoteCount = upVote - downVote;
                                 
-                                let newHeadline = Headline(headline: description, headlineID: headlineID, posterName: posterName, categoryName: category, categoryID: categoryID, voteCount: totalVoteCount, chatRoomPopulation: chatRoomPop, globalOrLocal: 0);
+                                let newHeadline = Headline(headline: description, headlineID: headlineID,chatRoomID: chatRoomID, posterName: posterName, categoryName: category, categoryID: categoryID, voteCount: totalVoteCount, chatRoomPopulation: chatRoomPop, globalOrLocal: 0);
                                 
                                 self.headlines.append(newHeadline);
                                 count+=1;
@@ -259,7 +280,7 @@ extension LocalFeed{
         
     }
     
-    func showErrorAlert(){
+    @objc func showErrorAlert(){
         let alert = UIAlertController(title: "Ugh-Oh!", message: "It seems there was an error connecting to our servers... try again later ", preferredStyle: .alert);
         alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { (action) in
             self.refreshControl.endRefreshing();

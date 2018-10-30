@@ -8,7 +8,9 @@
 
 import UIKit
 
-class FeedCollectionViewCell: UICollectionViewCell{
+let voteSendErrorNotification = "VoteSendErrorNotification";
+
+class FeedCollectionViewCell: UICollectionViewCell, VotingViewDelegate{
     
     let headlineText = "I can't believe that people would believe that trump is a bad president. I think he's an awesome president, and that he's doing great !!!!!!";
     
@@ -21,7 +23,6 @@ class FeedCollectionViewCell: UICollectionViewCell{
         let userImageView = UIImageView();
         userImageView.translatesAutoresizingMaskIntoConstraints = false;
         userImageView.image = #imageLiteral(resourceName: "pig");
-//        userImageView.backgroundColor = UIColor.red;
         userImageView.layer.cornerRadius = 7.5;
         return userImageView;
     }()
@@ -93,6 +94,8 @@ class FeedCollectionViewCell: UICollectionViewCell{
         votingView.widthAnchor.constraint(equalToConstant: 25).isActive = true;
         votingView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true;
         votingView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true;
+        
+        votingView.delegate = self;
     }
     
     fileprivate func setupUserImage(){
@@ -168,7 +171,45 @@ class FeedCollectionViewCell: UICollectionViewCell{
         self.cellHeadline = headline;
     }
     
+    func setChatPopulation(population: Int){
+        self.numberOfPeopleInChatRoom.text = "\(population)/100"
+    }
+    
 }
 
 extension FeedCollectionViewCell{
+    func voted(type: Int) {
+        let vote = type;
+        let url = URL(string: "http://54.202.134.243:3000/upVote_downVote")!;
+        var request = URLRequest(url: url);
+        let body = "vote=\(vote)&headlineID=\(self.cellHeadline!.headlineID!)";
+        request.httpBody = body.data(using: .utf8);
+        request.httpMethod = "POST";
+        let task = URLSession.shared.dataTask(with: request) { (data, res, err) in
+            if(err != nil){
+                DispatchQueue.main.async {
+                    self.handleSendErrorNotification();
+                    return;
+                }
+            }
+            
+            if(data != nil){
+                let response = NSString(data: data!, encoding: 8);
+                if(response == "error"){
+                    DispatchQueue.main.async {
+                        self.handleSendErrorNotification();
+                    }
+                }
+            }
+            
+        }
+        task.resume();
+        
+    }
+    
+    func handleSendErrorNotification(){
+        let name = Notification.Name(rawValue: voteSendErrorNotification);
+        NotificationCenter.default.post(name: name, object: nil);
+    }
+    
 }

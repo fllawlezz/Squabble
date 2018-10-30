@@ -51,8 +51,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             navigationController.navigationBar.isHidden = true;
             window?.rootViewController = navigationController;
         }else{
-            let customTabBar = CustomTabBarController();
-            window?.rootViewController = customTabBar;
+            let splashPage = SplashPage();
+            window?.rootViewController = splashPage;
+//            let customTabBar = CustomTabBarController();
+//            window?.rootViewController = customTabBar;
         }
         
         
